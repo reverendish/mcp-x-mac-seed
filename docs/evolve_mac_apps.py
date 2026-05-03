@@ -102,7 +102,7 @@ def parse_sdef(app_data):
     return commands
 
 # ─── Step 3: Generate tool via Groq ───
-def generate_tool(groq_client, app_name, command, model="llama-3.3-70b-versatile"):
+def generate_tool(client, app_name, command, model, provider):
     """Send one command to Groq LLM and get back a production tool schema."""
     
     prompt = f"""You are an AppleScript automation expert. Given a macOS app and a command from its scripting dictionary, output JSON for an MCP tool.
@@ -132,7 +132,7 @@ Example for Calendar "create event":
 Output ONLY JSON. No explanations, no markdown fences."""
     
     try:
-        resp = groq_client.chat.completions.create(
+        resp = client.chat.completions.create(
             model=model,
             messages=[
                 {"role": "system", "content": "You are an AppleScript compiler. Output only JSON."},
@@ -154,14 +154,32 @@ Output ONLY JSON. No explanations, no markdown fences."""
 # ─── Main ───
 def main():
     parser = argparse.ArgumentParser(description="Evolve macOS app SDEFs into MCP tools")
-    parser.add_argument("--groq-key", required=True, help="Your Groq API key")
+    parser.add_argument("--groq-key", help="Your Groq API key")
+    parser.add_argument("--mistral-key", help="Your Mistral API key (1B free tokens/month)")
     parser.add_argument("--app", action="append", help="Only evolve specific app(s)")
     parser.add_argument("--resume", action="store_true", help="Resume from cache")
-    parser.add_argument("--model", default="llama-3.3-70b-versatile", help="Groq model name")
+    parser.add_argument("--model", default="", help="Model name (auto-picks best)")
     args = parser.parse_args()
     
-    from groq import Groq
-    client = Groq(api_key=args.groq_key)
+    # Determine provider from API key
+    if args.mistral_key:
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=args.mistral_key,
+            base_url="https://api.mistral.ai/v1"
+        )
+        provider = "mistral"
+        model = args.model or "mistral-large-latest"
+        print(f"Provider: Mistral (model: {model}) — 1B free tokens")
+    elif args.groq_key:
+        from groq import Groq
+        client = Groq(api_key=args.groq_key)
+        provider = "groq"
+        model = args.model or "llama-3.3-70b-versatile"
+        print(f"Provider: Groq (model: {model}) — free tier")
+    else:
+        print("ERROR: Provide --groq-key or --mistral-key")
+        sys.exit(1)
     
     # Load or extract SDEFs
     cache = {}
@@ -207,7 +225,7 @@ def main():
             if cmd_key in processed_set:
                 continue
             
-            tool = generate_tool(client, app["name"], cmd, args.model)
+            tool = generate_tool(client, app["name"], cmd, model, provider)
             completed += 1
             
             if tool:
@@ -225,7 +243,7 @@ def main():
                 print(f"  ⏸ [{completed}/{total}] Rate limited. Waiting 30s...")
                 time.sleep(30)
                 # Retry once
-                tool = generate_tool(client, app["name"], cmd, args.model)
+                tool = generate_tool(client, app["name"], cmd, model, provider)
                 if tool:
                     all_tools.append(tool)
                     processed_set.add(cmd_key)
@@ -238,11 +256,10 @@ def main():
                 errors += 1
                 print(f"  ❌ [{completed}/{total}] {cmd_key}")
             
-            # Rate limit: 28 req/min for Groq free
-            if completed % 28 == 0 and completed < total:
-                wait = 10
-                print(f"  ⏳ Rate limit pause: {wait}s...")
-                time.sleep(wait)
+            # Rate limit handling differs by provider
+            if provider == "groq" and completed % 28 == 0 and completed < total:
+                print(f"  ⏳ Rate limit cooldown: 8s...")
+                time.sleep(8)
     
     # Save final output
     with open(OUTPUT_FILE, "w") as f:
