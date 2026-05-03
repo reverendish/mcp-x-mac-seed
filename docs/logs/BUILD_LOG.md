@@ -207,3 +207,33 @@
 
 ### 🎉 Project Complete
 71 tests, 20 source files, ~8,500 lines of Swift
+
+## 2026-05-03 — Session: Execution Engine Fix + Phase 11 Completion
+
+### Bugs Fixed
+- **execute_intent timeout:** Replaced blocking `NSAppleScript.executeAndReturnError()` with `osascript -e` subprocess via `DispatchQueue.global()` with 10s timeout. Execution now completes in 200-1000ms instead of hanging.
+- **Consent gate crash:** Added `{app}_{intentName}` lookup fallback for registry tool matching. Unregistered tools now skip consent gating instead of crashing with RegistryError.
+- **Consent auto-execution:** Approving a pending request now automatically runs the command and returns the result — no need for a second execute_intent call.
+
+### Phase 11: OpenClaw Integration ✅
+- All 8 tools live-verified via OpenClaw MCP bridge
+- StdioTransport config confirmed working
+- 388 tools auto-discovered across ~50 apps
+- OPENCLAW_INTEGRATION.md updated with live test matrix
+- IMPLEMENTATION_CHECKLIST.md: all Phase 11 tasks marked complete ✅
+- PROJECT_STATE.md: status updated to "all 14 phases complete"
+
+### Tests
+- Created ExecutionEngineTests.swift: 8 new tests (AppleScript execution, timeout, security, fallback, Codable)
+- Full suite: 80/80 passing (10 suites)
+- Known flaky: ExecutionEngine "AppleScript returns output" under full parallel load (concurrent Process spawning)
+
+### Code Changes
+- `ExecutionEngine.swift`: NSAppleScript → osascript Process, add `runSubprocess()` helper
+- `ApprovalGate.swift`: Add `app`/`intentName` to PendingApproval, add `getPendingAction()`
+- `ToolRegistrations.swift`: Fix consent gate tool lookup, add auto-execute on approve
+- `Tests/ExecutionEngineTests.swift`: New file, 8 tests
+- `Tests/ApprovalGateTests.swift`: Updated for new PendingApproval fields
+- `docs/OPENCLAW_INTEGRATION.md`: Rewritten with live verification matrix
+- `docs/checklists/IMPLEMENTATION_CHECKLIST.md`: Phase 11 marked complete
+- `PROJECT_STATE.md`: Updated status

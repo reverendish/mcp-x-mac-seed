@@ -33,6 +33,8 @@ struct ApprovalGateTests {
         
         #expect(pendingInfo.toolID == id)
         #expect(pendingInfo.toolName == "delete_email")
+        #expect(pendingInfo.app == "")
+        #expect(pendingInfo.intentName == "")
         #expect(!pendingInfo.requestID.isEmpty, "Should have a unique request ID")
         #expect(!pendingInfo.timestamp.isEmpty)
     }

@@ -161,18 +161,21 @@ struct RepairmanTests {
         let explorer = IntentExplorer()
         let repairman = Repairman(registry: registry, sdefExtractor: sdef, intentExplorer: explorer)
         
-        _ = try await registry.registerTool(name: "code_test", app: "Test", schemaJSON: "{}", embedding: nil)
+        _ = try await registry.registerTool(name: "code_test_1", app: "Test", schemaJSON: "{}", embedding: nil)
+        _ = try await registry.registerTool(name: "code_test_2", app: "Test", schemaJSON: "{}", embedding: nil)
+        _ = try await registry.registerTool(name: "code_test_3", app: "Test", schemaJSON: "{}", embedding: nil)
+        _ = try await registry.registerTool(name: "code_test_4", app: "Test", schemaJSON: "{}", embedding: nil)
         
-        let missingParam = try await repairman.analyzeFailure(toolName: "code_test", appName: "Test", error: "Missing required parameter: to")
+        let missingParam = try await repairman.analyzeFailure(toolName: "code_test_1", appName: "Test", error: "Missing required parameter: to")
         #expect(missingParam.errorCode == "MISSING_REQUIRED")
         
-        let typeMismatch = try await repairman.analyzeFailure(toolName: "code_test", appName: "Test", error: "Type mismatch: expected Int, got String")
+        let typeMismatch = try await repairman.analyzeFailure(toolName: "code_test_2", appName: "Test", error: "Type mismatch: expected Int, got String")
         #expect(typeMismatch.errorCode == "TYPE_MISMATCH")
         
-        let permission = try await repairman.analyzeFailure(toolName: "code_test", appName: "Test", error: "Permission denied for operation")
+        let permission = try await repairman.analyzeFailure(toolName: "code_test_3", appName: "Test", error: "Permission denied")
         #expect(permission.errorCode == "PERMISSION_DENIED")
         
-        let unknown = try await repairman.analyzeFailure(toolName: "code_test", appName: "Test", error: "Something weird happened")
+        let unknown = try await repairman.analyzeFailure(toolName: "code_test_4", appName: "Test", error: "Something weird happened")
         #expect(unknown.errorCode == "UNKNOWN")
     }
     
@@ -200,3 +203,35 @@ struct RepairmanTests {
         #expect(context.appName == "Finder")
     }
 }
+
+    // MARK: - Circuit Breaker
+    
+    @Test("Circuit breaker trips after max repair attempts")
+    func testCircuitBreaker() async throws {
+        let registry = try Registry(path: ":memory:")
+        let sdef = SDEFExtractor()
+        let explorer = IntentExplorer()
+        let repairman = Repairman(registry: registry, sdefExtractor: sdef, intentExplorer: explorer)
+        
+        _ = try await registry.registerTool(name: "doomed_tool", app: "Test", schemaJSON: "{}", embedding: nil)
+        
+        // First 3 repairs should succeed
+        _ = try await repairman.analyzeFailure(toolName: "doomed_tool", appName: "Test", error: "error 1")
+        _ = try await repairman.analyzeFailure(toolName: "doomed_tool", appName: "Test", error: "error 2")
+        _ = try await repairman.analyzeFailure(toolName: "doomed_tool", appName: "Test", error: "error 3")
+        
+        // 4th should trip the circuit breaker
+        do {
+            _ = try await repairman.analyzeFailure(toolName: "doomed_tool", appName: "Test", error: "error 4")
+            #expect(Bool(false), "Should have thrown circuit breaker error")
+        } catch let error as RepairError {
+            if case .circuitBreakerTripped(let tool, let attempts, _) = error {
+                #expect(tool == "doomed_tool")
+                #expect(attempts == 3)
+            } else {
+                #expect(Bool(false), "Wrong error type")
+            }
+        } catch {
+            #expect(Bool(false), "Wrong error type: \(error)")
+        }
+    }

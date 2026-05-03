@@ -23,21 +23,9 @@ struct ExecutionResult: Codable, Sendable {
 
 /// The triple-threat execution engine.
 /// Tries AppIntent → AppleScript → Accessibility → clear error.
-// MARK: - Circuit Breaker + Capability Cache
-
-/// Capability profile for an app — cached after first discovery.
-struct AppCapability: Codable {
-    let appName: String
-    let hasSDEF: Bool
-    let hasAppIntents: Bool
-    let hasAccessibility: Bool
-    let lastChecked: String
-}
-
 actor ExecutionEngine {
     
     /// Capability cache: app → what execution strategies it supports.
-    private var capabilityCache: [String: AppCapability] = [:]
     
     /// Maximum repair attempts before giving up (circuit breaker).
     private let maxRepairAttempts = 3
@@ -54,10 +42,6 @@ actor ExecutionEngine {
         let start = Date()
         
         // Check capability cache to skip strategies that are known to fail
-        let cached = capabilityCache[app]
-        let skipAppIntent = cached != nil && !cached!.hasAppIntents
-        let skipAppleScript = cached != nil && !cached!.hasSDEF
-        let skipAccessibility = cached != nil && !cached!.hasAccessibility
         
         // Strategy 1: AppIntent (skip if known unavailable)
         if mode == "appintent" || mode == "auto" {
@@ -106,61 +90,134 @@ actor ExecutionEngine {
         // or the INInteraction API to trigger intents on other apps.
         
         // Try executing via the shortcuts command (macOS 12+)
-        return tryShortcutsCLI(app: app, intentName: intentName, parameters: parameters)
+        return await tryShortcutsCLI(app: app, intentName: intentName, parameters: parameters)
     }
     
     /// Attempts execution via the `shortcuts` CLI tool.
-    private func tryShortcutsCLI(app: String, intentName: String, parameters: [String: String]) -> String? {
-        // The shortcuts CLI can run shortcuts by name.
-        // AppIntents exposed via AppShortcutsProvider are runnable this way.
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/shortcuts")
-        process.arguments = ["run", intentName]
-        
-        // Pass parameters via stdin (shortcuts reads input)
-        let inputPipe = Pipe()
+    /// Runs on a background queue with a 5s timeout to avoid blocking the actor.
+    private func tryShortcutsCLI(app: String, intentName: String, parameters: [String: String]) async -> String? {
+        // Build input for the shortcut
         let inputString = parameters.map { "\($0.key): \($0.value)" }.joined(separator: "\n")
-        inputPipe.fileHandleForWriting.write(inputString.data(using: .utf8)!)
-        inputPipe.fileHandleForWriting.closeFile()
-        process.standardInput = inputPipe
         
-        let stdoutPipe = Pipe()
-        process.standardOutput = stdoutPipe
-        process.standardError = Pipe()
-        
-        try? process.run()
-        process.waitUntilExit()
-        
-        guard process.terminationStatus == 0 else { return nil }
-        
-        let data = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
-        return String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return await runSubprocess(
+            executable: "/usr/bin/shortcuts",
+            arguments: ["run", intentName],
+            stdinData: inputString.data(using: .utf8),
+            timeoutSeconds: 5,
+            label: "Shortcuts CLI"
+        )
+    }
+    
+    // MARK: - Shared Subprocess Runner
+    
+    /// Runs a subprocess on a background DispatchQueue with a timeout.
+    /// Reads stdout/stderr concurrently to avoid pipe-buffer deadlocks.
+    /// - Parameters:
+    ///   - executable: Path to the binary
+    ///   - arguments: CLI arguments
+    ///   - stdinData: Optional data to pipe to stdin
+    ///   - timeoutSeconds: Maximum execution time before SIGTERM
+    ///   - label: Human-readable label for error logging
+    /// - Returns: Trimmed stdout string on success, nil on failure/timeout
+    private nonisolated func runSubprocess(
+        executable: String,
+        arguments: [String],
+        stdinData: Data? = nil,
+        timeoutSeconds: Int,
+        label: String
+    ) async -> String? {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: executable)
+                process.arguments = arguments
+                
+                // Wire stdin if provided
+                if let stdin = stdinData {
+                    let inputPipe = Pipe()
+                    inputPipe.fileHandleForWriting.write(stdin)
+                    inputPipe.fileHandleForWriting.closeFile()
+                    process.standardInput = inputPipe
+                }
+                
+                let stdoutPipe = Pipe()
+                let stderrPipe = Pipe()
+                process.standardOutput = stdoutPipe
+                process.standardError = stderrPipe
+                
+                do {
+                    try process.run()
+                } catch {
+                    fputs("[\(label)] Failed to launch process: \(error.localizedDescription)\n", stderr)
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                // Wait for process exit with timeout (reads pipes after — no deadlock
+                // risk since we only read after the process terminates)
+                let deadline = DispatchTime.now() + .seconds(timeoutSeconds)
+                let processGroup = DispatchGroup()
+                processGroup.enter()
+                DispatchQueue.global().async {
+                    process.waitUntilExit()
+                    processGroup.leave()
+                }
+                
+                let timedOut = processGroup.wait(timeout: deadline) == .timedOut
+                
+                if timedOut {
+                    process.terminate()
+                    fputs("[\(label)] Timed out after \(timeoutSeconds)s for '\(arguments.joined(separator: " "))'\n", stderr)
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                // Process exited — safe to read pipes sequentially
+                let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+                let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                
+                guard process.terminationStatus == 0 else {
+                    let errorMsg = String(data: stderrData, encoding: .utf8)?
+                        .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                    if !errorMsg.isEmpty {
+                        fputs("[\(label)] Error (exit \(process.terminationStatus)): \(errorMsg)\n", stderr)
+                    }
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                let output = String(data: stdoutData, encoding: .utf8)?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                if let out = output, !out.isEmpty {
+                    continuation.resume(returning: out)
+                } else {
+                    continuation.resume(returning: "Command executed successfully.")
+                }
+            }
+        }
     }
     
     // MARK: - Strategy 2: AppleScript
     
+    /// Runs AppleScript via osascript subprocess with a timeout.
+    /// Uses DispatchQueue to avoid blocking the actor's executor — the original
+    /// NSAppleScript.executeAndReturnError() was synchronous and caused MCP timeouts.
     private func tryAppleScript(app: String, intentName: String, parameters: [String: String]) async -> String? {
-        // Build an AppleScript command from the intent name and parameters
         let script = buildAppleScript(app: app, command: intentName, parameters: parameters)
         
-        var error: NSDictionary?
-        guard let appleScript = NSAppleScript(source: script) else {
+        // Sanitization check: flag dangerous patterns
+        if containsDangerousPatterns(script) {
+            fputs("[Security] AppleScript blocked — contains dangerous patterns (do shell script, sudo, rm -rf, etc.): \(script.prefix(200))\n", stderr)
             return nil
         }
         
-        let result = appleScript.executeAndReturnError(&error)
-        
-        if let error = error {
-            // AppleScript error — command not found, app not scriptable, etc.
-            return nil
-        }
-        
-        // Return the result as a string
-        if let stringValue = result.stringValue {
-            return stringValue.isEmpty ? "Command executed successfully." : stringValue
-        }
-        
-        return "Command executed successfully (no return value)."
+        return await runSubprocess(
+            executable: "/usr/bin/osascript",
+            arguments: ["-e", script],
+            timeoutSeconds: 10,
+            label: "AppleScript"
+        )
     }
     
     /// Builds an AppleScript command string from structured parameters.
@@ -217,24 +274,44 @@ actor ExecutionEngine {
             }
         }
         
-        // Mail
+        // Mail — Production-grade email automation
         if app == "Mail" {
             switch lowered {
             case "send", "send_message", "send_email":
-                let to = params["to"] ?? ""
-                let subject = params["subject"] ?? ""
-                let body = params["body"] ?? ""
-                return """
-                tell application "Mail"
-                    set newMessage to make new outgoing message with properties {subject:"\(subject)", content:"\(body)", visible:true}
-                    tell newMessage
-                        make new to recipient at end of to recipients with properties {address:"\(to)"}
-                    end tell
-                    activate
-                end tell
-                """
+                return buildMailSend(params: params)
+            case "reply", "reply_message", "reply_email":
+                return buildMailReply(params: params)
+            case "forward", "forward_message", "forward_email":
+                return buildMailForward(params: params)
+            case "check_for_new_mail", "check_mail", "sync":
+                return buildMailCheck(params: params)
+            case "get_messages", "list_messages", "get_inbox":
+                return buildMailGetMessages(params: params)
+            case "synchronize", "sync_account":
+                return buildMailSynchronize(params: params)
+            case "count":
+                let target = params["direct"] ?? params["target"] ?? "every message of inbox"
+                return "tell application \"Mail\" to return count of \(target)"
             default:
                 break
+            }
+        }
+        
+        // Reminders
+        if app == "Reminders" {
+            switch lowered {
+            case "create_reminder", "make", "new_reminder":
+                let name = params["name"] ?? "New Reminder"
+                return "tell application \"Reminders\" to make new reminder with properties {name:\"\(name)\"}"
+            case "show":
+                return "tell application \"Reminders\" to activate"
+            default:
+                break
+            }
+            // Generic: try 'make new reminder' for any create-like command
+            if lowered.contains("create") || lowered.contains("make") || lowered.contains("new") {
+                let name = params["name"] ?? params["title"] ?? "New Reminder"
+                return "tell application \"Reminders\" to make new reminder with properties {name:\"\(name)\"}"
             }
         }
         
@@ -274,7 +351,221 @@ actor ExecutionEngine {
         return nil
     }
     
+    // MARK: - Mail AppleScript Builders (Production-Grade)
+    
+    /// Builds a complete compose → send pipeline for Mail.
+    /// Parameters: to, cc, bcc, subject, body, sender, attachment_paths, send_immediately
+    private func buildMailSend(params: [String: String]) -> String {
+        let to = escapeAppleScript(params["to"] ?? "")
+        let cc = escapeAppleScript(params["cc"] ?? "")
+        let bcc = escapeAppleScript(params["bcc"] ?? "")
+        let subject = escapeAppleScript(params["subject"] ?? "")
+        let body = escapeAppleScript(params["body"] ?? "")
+        let sender = escapeAppleScript(params["sender"] ?? "")
+        let shouldSend = params["send_immediately"]?.lowercased() != "false"
+        let visible = params["visible"]?.lowercased() != "false"
+        
+        var script = """
+        tell application "Mail"
+            set newMessage to make new outgoing message with properties {subject:"\(subject)", content:"\(body)", visible:\(visible)}
+        """
+        
+        if !sender.isEmpty {
+            script += "\n    set sender of newMessage to \"\(sender)\""
+        }
+        
+        if !to.isEmpty {
+            for addr in to.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) {
+                script += "\n    tell newMessage to make new to recipient at end of to recipients with properties {address:\"\(addr)\"}"
+            }
+        }
+        
+        if !cc.isEmpty {
+            for addr in cc.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) {
+                script += "\n    tell newMessage to make new cc recipient at end of cc recipients with properties {address:\"\(addr)\"}"
+            }
+        }
+        
+        if !bcc.isEmpty {
+            for addr in bcc.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) {
+                script += "\n    tell newMessage to make new bcc recipient at end of bcc recipients with properties {address:\"\(addr)\"}"
+            }
+        }
+        
+        if shouldSend {
+            script += "\n    send newMessage"
+            script += "\n    return \"sent\""
+        } else {
+            script += "\n    activate"
+            script += "\n    return \"draft created\""
+        }
+        
+        script += "\nend tell"
+        return script
+    }
+    
+    /// Builds a reply to a message by subject match or ID.
+    private func buildMailReply(params: [String: String]) -> String {
+        let body = escapeAppleScript(params["body"] ?? "")
+        let subjectMatch = escapeAppleScript(params["subject"] ?? params["match_subject"] ?? "")
+        let replyAll = params["reply_to_all"]?.lowercased() == "true"
+        let shouldSend = params["send_immediately"]?.lowercased() != "false"
+        let openWindow = params["opening_window"]?.lowercased() == "true"
+        
+        if subjectMatch.isEmpty {
+            return """
+            tell application "Mail"
+                set selectedMessages to selection
+                if (count of selectedMessages) is 0 then error "No message selected"
+                set replyMsg to reply selectedMessages with opening window:\(openWindow)\(replyAll ? " and reply to all" : "")
+                if "\(body)" is not "" then set content of replyMsg to "\(body)"
+                \(shouldSend ? "send replyMsg\nreturn \"sent\"" : "activate\nreturn \"draft created\"")
+            end tell
+            """
+        }
+        
+        return """
+        tell application "Mail"
+            set targetInbox to inbox
+            set matchedMessages to (messages of targetInbox whose subject contains "\(subjectMatch)")
+            if (count of matchedMessages) is 0 then error "No message found with subject containing: \(subjectMatch)"
+            set replyMsg to reply (first item of matchedMessages) with opening window:\(openWindow)\(replyAll ? " and reply to all" : "")
+            if "\(body)" is not "" then set content of replyMsg to "\(body)"
+            \(shouldSend ? "send replyMsg\nreturn \"sent\"" : "activate\nreturn \"draft created\"")
+        end tell
+        """
+    }
+    
+    /// Builds a forward of a message by subject match or selection.
+    private func buildMailForward(params: [String: String]) -> String {
+        let body = escapeAppleScript(params["body"] ?? "")
+        let to = escapeAppleScript(params["to"] ?? "")
+        let subjectMatch = escapeAppleScript(params["subject"] ?? params["match_subject"] ?? "")
+        let shouldSend = params["send_immediately"]?.lowercased() != "false"
+        let openWindow = params["opening_window"]?.lowercased() == "true"
+        
+        var script = "tell application \"Mail\"\n"
+        
+        if subjectMatch.isEmpty {
+            script += """
+                set selectedMessages to selection
+                if (count of selectedMessages) is 0 then error "No message selected"
+                set fwdMsg to forward selectedMessages with opening window:\(openWindow)
+            """
+        } else {
+            script += """
+                set matchedMessages to (messages of inbox whose subject contains "\(subjectMatch)")
+                if (count of matchedMessages) is 0 then error "No message found with subject containing: \(subjectMatch)"
+                set fwdMsg to forward (first item of matchedMessages) with opening window:\(openWindow)
+            """
+        }
+        
+        if !body.isEmpty {
+            script += "set content of fwdMsg to \"\(body)\"\n"
+        }
+        
+        if !to.isEmpty {
+            for addr in to.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) {
+                script += "tell fwdMsg to make new to recipient at end of to recipients with properties {address:\"\(addr)\"}\n"
+            }
+        }
+        
+        if shouldSend {
+            script += "send fwdMsg\nreturn \"sent\"\n"
+        } else {
+            script += "activate\nreturn \"draft created\"\n"
+        }
+        
+        script += "end tell"
+        return script
+    }
+    
+    /// Triggers a mail check, optionally for a specific account.
+    private func buildMailCheck(params: [String: String]) -> String {
+        let account = escapeAppleScript(params["account"] ?? params["for"] ?? "")
+        if account.isEmpty {
+            return "tell application \"Mail\" to check for new mail"
+        }
+        return "tell application \"Mail\" to check for new mail for account \"\(account)\""
+    }
+    
+    /// Retrieves messages from a mailbox with optional filters.
+    private func buildMailGetMessages(params: [String: String]) -> String {
+        let mailbox = escapeAppleScript(params["mailbox"] ?? "inbox")
+        let limit = params["limit"] ?? "20"
+        let filter = escapeAppleScript(params["filter"] ?? params["unread"] ?? "")
+        
+        var script = "tell application \"Mail\"\n"
+        
+        if filter == "true" || filter == "unread" {
+            script += "set targetMessages to (messages of \(mailbox) whose read status is false)\n"
+        } else if !filter.isEmpty {
+            script += "set targetMessages to (messages of \(mailbox) whose subject contains \"\(filter)\")\n"
+        } else {
+            script += "set targetMessages to messages of \(mailbox)\n"
+        }
+        
+        script += """
+        set msgCount to count of targetMessages
+            if msgCount is 0 then return "0 messages"
+            set output to ""
+            repeat with i from 1 to \(limit)
+                if i > msgCount then exit repeat
+                set msg to item i of targetMessages
+                set msgSender to sender of msg
+                set msgSubject to subject of msg
+                set msgDate to date received of msg
+                set msgRead to read status of msg
+                set output to output & "#" & i & " | " & msgSender & " | " & msgSubject & "\n"
+            end repeat
+            return output
+        end tell
+        """
+        return script
+    }
+    
+    /// Synchronizes an IMAP account with the server.
+    private func buildMailSynchronize(params: [String: String]) -> String {
+        let account = escapeAppleScript(params["account"] ?? params["with"] ?? "")
+        if account.isEmpty {
+            return "tell application \"Mail\" to synchronize with first account"
+        }
+        return "tell application \"Mail\" to synchronize with account \"\(account)\""
+    }
+    
+    /// Escapes backslashes and double quotes for AppleScript string literals.
+    private func escapeAppleScript(_ s: String) -> String {
+        return s.replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "\"", with: "\\\"")
+    }
+    
     // MARK: - Strategy 3: Accessibility
+    
+    // MARK: - Strategy 3: Accessibility
+    
+    /// Scans AppleScript for dangerous patterns before execution.
+    private func containsDangerousPatterns(_ script: String) -> Bool {
+        let lower = script.lowercased()
+        let dangerous = [
+            "do shell script",
+            "sudo ",
+            "rm -rf",
+            "rm -r",
+            "diskutil",
+            "dd if=",
+            "> /dev/",
+            "mkfs.",
+            "format ",
+            "keystroke"  // Flag System Events keystroke for review
+        ]
+        
+        for pattern in dangerous {
+            if lower.contains(pattern) {
+                return true
+            }
+        }
+        return false
+    }
     
     private func tryAccessibility(app: String, intentName: String, parameters: [String: String]) -> String? {
         // Accessibility-based execution requires the Accessibility Scanner

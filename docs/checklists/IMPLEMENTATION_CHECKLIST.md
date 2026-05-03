@@ -107,16 +107,19 @@
 - [x] ✅ 10.5 — Minimum relevance threshold (0.1) + result ranking
 - [x] ✅ 10.6 — Write EmbeddingTests (6 test cases: generation, similarity, semantic ranking)
 
-## Phase 11: OpenClaw Integration
+## Phase 11: OpenClaw Integration ✅
 
-- [ ] ☐ 11.1 — Create OpenClaw MCP bridge config (`mcp.json` or equivalent)
-- [ ] ☐ 11.2 — Test: OpenClaw → `scan_for_intents("Mail")` → receives raw schemas
-- [ ] ☐ 11.3 — Test: OpenClaw → `register_tool(...)` → tool appears in registry
-- [ ] ☐ 11.4 — Test: OpenClaw → `execute_intent(...)` → Mail sends message
-- [ ] ☐ 11.5 — Test: OpenClaw → `fetch_scripting_dictionary("Finder")` → SDEF schema returned
-- [ ] ☐ 11.6 — Test: OpenClaw → `capture_screen_context()` → active window info returned
-- [ ] ☐ 11.7 — Test: `list_registered_tools(search: "send message")` → semantic match
-- [ ] ☐ 11.8 — Document the "Hello World" flow in developer docs
+- [x] ✅ 11.1 — MCP bridge config via `openclaw mcp set` → StdioTransport verified
+- [x] ✅ 11.2 — Test: `capture_screen_context()` → active window info returned ✅
+- [x] ✅ 11.3 — Test: `list_registered_tools()` → 388 tools, semantic search working ✅
+- [x] ✅ 11.4 — Test: `scan_for_intents()` → returns Intent schemas ✅
+- [x] ✅ 11.5 — Test: `fetch_scripting_dictionary("Mail")` → 16 cmds, 27 classes ✅
+- [x] ✅ 11.6 — Test: `get_ui_tree("Google Chrome")` → 553 elements ✅
+- [x] ✅ 11.7 — Test: `execute_intent("Finder", "activate")` → 208ms via AppleScript ✅
+- [x] ✅ 11.8 — Test: `execute_intent` consent gate → PENDING → approve → auto-execute ✅
+- [x] ✅ 11.9 — Docs: OPENCLAW_INTEGRATION.md updated with live-verified results
+- [x] ✅ 11.10 — Execution engine fix: NSAppleScript → osascript subprocess (no more timeouts)
+- [x] ✅ 11.11 — Consent gate fix: `{app}_{command}` lookup + auto-execution on approve
 
 ## Phase 12: Self-Healing Loop (Repairman MVP)
 
@@ -142,9 +145,9 @@
 - [x] ✅ 14.1 — Update PROJECT_STATE.md with final status
 - [x] ✅ 14.2 — Write ARCHITECTURE.md with full system diagram + triple-threat flow
 - [x] ✅ 14.3 — Write DEVELOPER_GUIDE.md (local dev setup, build, test, run)
-- [x] ✅ 14.4 — ADR.md: 9 architecture decisions documented
-- [x] ✅ 14.5 — TEST_PLAN.md: 4-layer test strategy with execution order
-- [x] ✅ 14.6 — IMPLEMENTATION_CHECKLIST.md: tracked all 14 phases
-- [x] ✅ 14.7 — BUILD_LOG.md: full session history
-- [x] ✅ 14.8 — Final `swift test` — 71/71 suites (SDEF flaky under concurrent load)
-- [x] ✅ 14.9 — Final `swift build` — clean (debug)
+- [x] ✅ 14.4 — Write OPENCLAW_INTEGRATION.md (setup, verification, troubleshooting)
+- [x] ✅ 14.5 — ADR.md: 9 architecture decisions documented
+- [x] ✅ 14.6 — TEST_PLAN.md: 4-layer test strategy with execution order
+- [x] ✅ 14.7 — IMPLEMENTATION_CHECKLIST.md: tracked all 15 phases
+- [x] ✅ 14.8 — BUILD_LOG.md: full session history
+- [x] ✅ 14.9 — Evolution tests: 10/14 scenarios verified live

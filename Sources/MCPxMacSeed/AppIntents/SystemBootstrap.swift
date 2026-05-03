@@ -56,6 +56,10 @@ actor SystemBootstrap {
                 
                 let path = "\(dir)/\(item)"
                 
+                // Skip known problematic apps
+                let skipApps = ["automator application stub", "automator runner"]
+                if skipApps.contains(lower) { continue }
+                
                 // Strategy 1: SDEF (AppleScript — most reliable)
                 let dict = try? await sdefExtractor.fetchScriptingDictionary(appName: path)
                 if let sdef = dict, !sdef.commands.isEmpty {
@@ -63,7 +67,10 @@ actor SystemBootstrap {
                     for cmd in sdef.commands.prefix(limit) where !cmd.isHidden {
                         let toolName = sanitize("\(name)_\(cmd.name)")
                         let schema = buildSDEFSchema(command: cmd, app: name)
-                        _ = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
+                        let id = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
+                        if let toolID = id, TrustClassifier.classify(toolName: toolName) == .sensitive {
+                            try? await registry.setApprovalGate(id: toolID, requiresApproval: true)
+                        }
                         count += 1
                     }
                     continue
@@ -75,7 +82,10 @@ actor SystemBootstrap {
                     for intent in discovered.prefix(10) {
                         let toolName = sanitize("\(name)_\(intent.intentName)")
                         let schema = buildIntentSchema(intent: intent)
-                        _ = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
+                        let id = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
+                        if let toolID = id, TrustClassifier.classify(toolName: toolName) == .sensitive {
+                            try? await registry.setApprovalGate(id: toolID, requiresApproval: true)
+                        }
                         count += 1
                     }
                 }

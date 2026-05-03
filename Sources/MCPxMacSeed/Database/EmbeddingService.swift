@@ -114,6 +114,8 @@ extension Registry {
         guard !queryEmbedding.isEmpty else { return [] }
         
         let allTools = try listTools(app: nil)
+        let queryLower = query.lowercased()
+        let queryWords = queryLower.split(separator: " ").map(String.init)
         
         var scored: [(tool: ToolRecord, score: Float)] = []
         
@@ -122,14 +124,35 @@ extension Registry {
             let toolVector = await service.embed(text: searchText)
             guard !toolVector.isEmpty else { continue }
             
-            let score = EmbeddingService.cosineSimilarity(queryEmbedding, toolVector)
-            if score > 0.1 {
-                scored.append((tool, score))
+            let semanticScore = EmbeddingService.cosineSimilarity(queryEmbedding, toolVector)
+            
+            // Hybrid score: 70% semantic + 30% keyword boost
+            let keywordScore = keywordBoost(queryWords: queryWords, tool: tool)
+            let hybridScore = semanticScore * 0.7 + keywordScore * 0.3
+            
+            if hybridScore > 0.1 {
+                scored.append((tool, hybridScore))
             }
         }
         
         scored.sort { $0.score > $1.score }
         return scored.prefix(limit).map { SemanticSearchResult(tool: $0.tool, score: $0.score) }
+    }
+    
+    /// Boosts tools whose name or app contains query keywords.
+    private func keywordBoost(queryWords: [String], tool: ToolRecord) -> Float {
+        let nameLower = tool.name.lowercased()
+        let appLower = tool.app.lowercased()
+        var score: Float = 0
+        
+        for word in queryWords where !word.isEmpty {
+            if nameLower.contains(word) { score += 0.5 }
+            if appLower.contains(word) { score += 0.3 }
+            // Exact tool name match gets full boost
+            if nameLower == word { score = 1.0 }
+        }
+        
+        return min(score, 1.0)
     }
     
     private func extractDescription(_ schemaJSON: String) -> String {

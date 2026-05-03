@@ -285,14 +285,30 @@ func registerAllTools(
             parameters = [:]
         }
         
-        // Check consent gate
+        // Check consent gate via trust classification
+        let trustTier = TrustClassifier.classify(toolName: intentName)
         let allTools = try? await db.listTools(app: app)
-        let matchingTool = allTools?.first { $0.name == intentName }
         
-        if let tool = matchingTool, tool.requiresApproval {
+        // Tools are registered as {app}_{command} (e.g., "mail_check_for_new_mail").
+        // Try bare intent name first, then the prefixed form.
+        var matchingTool = allTools?.first { $0.name == intentName }
+        if matchingTool == nil {
+            let appPrefix = app.lowercased().replacingOccurrences(of: " ", with: "_")
+            matchingTool = allTools?.first { $0.name == "\(appPrefix)_\(intentName)" }
+        }
+        
+        // Only gate Tier 2 (sensitive) actions, and only when the tool is registered.
+        // Unregistered tools can't be gated — they execute with the default trust tier
+        // and the ExecutionEngine's own dangerous-pattern filter.
+        let requiresGate = (matchingTool?.requiresApproval == true || trustTier == .sensitive)
+            && matchingTool != nil
+        
+        if requiresGate, let tool = matchingTool {
             let consentResult = try await approvalGate.checkConsent(
                 toolID: tool.id,
                 toolName: intentName,
+                app: app,
+                intentName: intentName,
                 proposedAction: parameters
             )
             
@@ -478,9 +494,34 @@ func registerAllTools(
                     return errorResult("requestID is required for approve action")
                 }
                 let approved = try await approvalGate.approve(requestID: requestID)
-                return textResult(approved
-                    ? "✅ Action approved. The pending request has been authorized."
-                    : "❌ Approval failed. The request may have expired, already been resolved, or the requestID is invalid.")
+                guard approved else {
+                    return textResult("❌ Approval failed. The request may have expired, already been resolved, or the requestID is invalid.")
+                }
+                
+                // Auto-execute: retrieve the approved action and run it
+                guard let pendingAction = await approvalGate.getPendingAction(requestID: requestID) else {
+                    return textResult("✅ Action approved, but could not retrieve action details for execution.")
+                }
+                
+                let engine = ExecutionEngine()
+                let result = await engine.execute(
+                    app: pendingAction.app,
+                    intentName: pendingAction.intentName,
+                    parameters: pendingAction.proposedAction,
+                    mode: "auto"
+                )
+                
+                if result.success {
+                    let encoder = JSONEncoder()
+                    let resultJSON = (try? encoder.encode(result)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
+                    return textResult(
+                        "✅ Approved and executed '\(pendingAction.intentName)' on '\(pendingAction.app)' via \(result.strategy.rawValue) (\(Int(result.durationMs))ms).\nOutput: \(result.output ?? "(no output)")\n\nResult: \(resultJSON)"
+                    )
+                } else {
+                    return textResult(
+                        "⚠️ Approved but execution failed for '\(pendingAction.intentName)' on '\(pendingAction.app)'.\nError: \(result.error ?? "unknown")\n\nThis failure has been captured. Use the Repairman workflow to fix the schema."
+                    )
+                }
                 
             case "reject":
                 guard let requestID = arg(params, "requestID") else {

@@ -29,6 +29,18 @@ struct RepairContext: Codable, Sendable {
 
 // MARK: - Repair Result
 
+/// Errors the Repairman can encounter.
+enum RepairError: Error, Equatable {
+    case circuitBreakerTripped(tool: String, attempts: Int, lastError: String)
+    
+    var localizedDescription: String {
+        switch self {
+        case .circuitBreakerTripped(let tool, let attempts, let lastError):
+            return "Circuit breaker tripped for '\(tool)' after \(attempts) failed repair attempts. Last error: \(lastError). Manual review required."
+        }
+    }
+}
+
 /// The result of a repair attempt: a proposed schema update.
 struct RepairProposal: Codable, Sendable {
     let toolName: String
@@ -51,13 +63,15 @@ struct RepairProposal: Codable, Sendable {
 // MARK: - Repairman Service
 
 /// The Repairman analyzes tool failures and proposes schema corrections.
-/// It doesn't apply fixes automatically — it returns a RepairProposal that
-/// the agent (OpenClaw) reviews and uses to call register_tool with the fix.
+/// Implements a circuit breaker: max 3 repair attempts per tool before giving up.
 actor Repairman {
     
     private let registry: Registry
     private let sdefExtractor: SDEFExtractor
     private let intentExplorer: IntentExplorer
+    
+    /// Maximum repair attempts before circuit breaker trips.
+    private let maxRepairAttempts = 3
     
     init(registry: Registry, sdefExtractor: SDEFExtractor, intentExplorer: IntentExplorer) {
         self.registry = registry
@@ -85,6 +99,15 @@ actor Repairman {
             history = (try? await registry.getRepairHistory(id: id)) ?? []
         } else {
             history = []
+        }
+        
+        // Circuit breaker: if too many repair attempts, signal manual review
+        if history.count >= maxRepairAttempts {
+            throw RepairError.circuitBreakerTripped(
+                tool: toolName,
+                attempts: history.count,
+                lastError: history.last?.error ?? "unknown"
+            )
         }
         
         // Try to fetch the SDEF for this app (relevant for AppleScript failures)
