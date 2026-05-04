@@ -335,6 +335,17 @@ func registerAllTools(
         let encoder = JSONEncoder()
         let resultJSON = (try? encoder.encode(result)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
         
+        // Audit log: record every execution attempt (success or failure)
+        let sessionID = arg(params, "session_id")
+        try? await db.logAuditEntry(
+            action: "execute",
+            toolName: intentName,
+            app: app,
+            parameters: parameters,
+            result: result.success ? "success" : "failure",
+            sessionID: sessionID
+        )
+        
         if result.success {
             return textResultWithData(
                 "✅ Executed '\(intentName)' on '\(app)' via \(result.strategy.rawValue) (\(Int(result.durationMs))ms).\nOutput: \(result.output ?? "(no output)")",

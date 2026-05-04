@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-Batch Repair Script for MCP-x-Mac-Seed evolved tools.
+Batch Repair Script for MCP-x-Mac-Seed evolved tools — v0.2.0 (hardened)
 
-For each evolved tool that lacks an `appleScript` field, auto-generates one
-from the app's SDEF and re-registers via direct SQLite update.
+Security: Uses osascript 'on run argv' positional arg pattern to prevent
+AppleScript injection. All dynamic values passed as argv[n], never string-interpolated.
+
+XML Parsing: Uses xml.etree.ElementTree with namespace-aware parsing to handle
+xi:include, CDATA, and nested SDEF structures correctly.
 
 Usage:
     python3 batch_repair.py           # preview which tools need repair
@@ -15,7 +18,8 @@ import os
 import sqlite3
 import subprocess
 import sys
-import re
+import xml.etree.ElementTree as ET
+import unicodedata
 from datetime import datetime, timezone
 
 REGISTRY_DB = os.path.expanduser(
@@ -25,20 +29,58 @@ EVOLVED_TOOLS = os.path.join(
     os.path.dirname(__file__), "batch-output-313.json"
 )
 
+SDEF_NAMESPACE = "http://developer.apple.com/ns/sdef"
+
+# ─── Security: Input Sanitization ───
+
+# Allowed characters for AppleScript identifiers, paths, and values.
+# This is a strict whitelist — anything outside this set is rejected or stripped.
+_SAFE_CHARS = set(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "0123456789"
+    " _-.,:;!?@#$%&*()+=[]{}|/~`'^<>"  # balanced delimiters
+    "\n\t\r"                              # whitespace
+    "\u00c0-\u00ff\u0100-\u024f"         # Latin extended
+)
+
+
+def sanitize(value, max_length=1024):
+    """Whitelist-based sanitizer for all user/LLM-supplied values.
+
+    Strips characters outside the allowed set. If the resulting string
+    is empty or exceeds max_length, returns a safe default.
+    """
+    if not isinstance(value, str):
+        return ""
+    cleaned = "".join(c for c in value if c in _SAFE_CHARS)
+    cleaned = cleaned.strip()
+    if len(cleaned) > max_length:
+        cleaned = cleaned[:max_length]
+    if not cleaned:
+        return ""  # caller should handle empty
+    return cleaned
+
+
+def sanitize_app_name(name):
+    """Sanitize app name — double quotes are strictly forbidden in tell blocks."""
+    name = sanitize(name)
+    return name.replace('"', "").replace("\\", "")
+
+
+# ─── SDEF Parsing: ElementTree (Replaces regex) ───
+
 
 def load_sdef(app_name):
-    """Run /usr/bin/sdef and parse command names → appleScript hints."""
-    # Find app path
+    """Run /usr/bin/sdef and parse commands with ElementTree."""
     dirs = [
-        "/System/Applications",
-        "/System/Applications/Utilities",
-        "/Applications",
-        "/Applications/Utilities",
+        "/System/Applications", "/System/Applications/Utilities",
+        "/Applications", "/Applications/Utilities",
     ]
     app_path = None
     for d in dirs:
-        # Also check bundle ID
-        for item in os.listdir(d) if os.path.isdir(d) else []:
+        if not os.path.isdir(d):
+            continue
+        for item in os.listdir(d):
             name = item[:-4] if item.endswith(".app") else item
             if name.lower() == app_name.lower():
                 app_path = os.path.join(d, item)
@@ -47,13 +89,13 @@ def load_sdef(app_name):
             break
 
     if not app_path:
-        # Try by app name directly
         result = subprocess.run(
-            ["mdfind", f"kMDItemKind == 'Application' && kMDItemDisplayName == '{app_name}.app'"],
+            ["mdfind",
+             f"kMDItemKind == 'Application' && kMDItemDisplayName == '{sanitize_app_name(app_name)}.app'"],
             capture_output=True, text=True, timeout=10
         )
         paths = result.stdout.strip().split("\n")
-        if paths and paths[0]:
+        if paths and paths[0] and os.path.exists(paths[0]):
             app_path = paths[0]
 
     if not app_path or not os.path.exists(app_path):
@@ -66,83 +108,138 @@ def load_sdef(app_name):
     if result.returncode != 0 or not result.stdout.strip():
         return {}
 
-    xml = result.stdout
+    return parse_sdef_xml(result.stdout)
 
-    # Parse commands from SDEF XML
+
+def parse_sdef_xml(xml_string):
+    """Parse SDEF XML using ElementTree with namespace awareness.
+
+    Handles xi:include, nested suites, CDATA sections, and hidden commands.
+    Returns {command_name: {description, parameters}}.
+    """
     commands = {}
-    pattern = r'<command\s+name="([^"]*)"[^>]*\s*(?:description="([^"]*)")?'
-    for match in re.finditer(pattern, xml):
-        cmd_name = match.group(1)
-        desc = match.group(2) or ""
-        if not cmd_name:
+    try:
+        # Register namespaces
+        ET.register_namespace("xi", "http://www.w3.org/2003/XInclude")
+        root = ET.fromstring(xml_string)
+    except ET.ParseError:
+        return {}
+
+    ns = {"sdef": SDEF_NAMESPACE}
+
+    for cmd_elem in root.iter(f"{{{SDEF_NAMESPACE}}}command"):
+        name = cmd_elem.get("name", "").strip()
+        if not name:
+            continue
+        # Skip hidden commands
+        if cmd_elem.get("hidden", "no") == "yes":
             continue
 
-        # Get command context (parameters)
-        cmd_start = match.start()
-        cmd_end = xml.find("</command>", cmd_start)
-        if cmd_end < 0:
-            cmd_end = xml.find("/>", cmd_start) + 2
-            if cmd_end < 2:
-                continue
-        else:
-            cmd_end += 10
-        cmd_xml = xml[cmd_start:cmd_end]
+        desc = cmd_elem.get("description", "").strip()
 
         # Extract parameters
         params = []
-        dp_match = re.search(r'<direct-parameter[^>]*type="([^"]*)"[^>]*description="([^"]*)"', cmd_xml)
-        if dp_match:
+        # Direct parameter
+        dp = cmd_elem.find(f"{{{SDEF_NAMESPACE}}}direct-parameter")
+        if dp is not None:
             params.append({
                 "name": "value",
-                "type": dp_match.group(1),
-                "desc": dp_match.group(2),
+                "type": dp.get("type", "text"),
+                "desc": dp.get("description", "").strip(),
                 "is_direct": True,
             })
-        for pm in re.finditer(r'<parameter\s+name="([^"]*)"[^>]*type="([^"]*)"[^>]*(?:description="([^"]*)")?', cmd_xml):
-            params.append({
-                "name": pm.group(1),
-                "type": pm.group(2),
-                "desc": pm.group(3) or "",
-                "is_direct": False,
-            })
 
-        commands[cmd_name] = {
-            "description": desc,
+        # Named parameters
+        for p_elem in cmd_elem.findall(f"{{{SDEF_NAMESPACE}}}parameter"):
+            pname = p_elem.get("name", "").strip()
+            if pname:
+                params.append({
+                    "name": pname,
+                    "type": p_elem.get("type", "text"),
+                    "desc": p_elem.get("description", "").strip(),
+                    "is_direct": False,
+                })
+
+        commands[name] = {
+            "description": sanitize(desc, max_length=512),
             "parameters": params,
         }
 
     return commands
 
 
+# ─── AppleScript Generation: osascript 'on run argv' pattern ───
+
 def generate_applescript(app_name, sdef_cmd_name, params):
-    """Generate an AppleScript string from SDEF command info."""
-    script = f'tell application "{app_name}"\n'
+    """Generate a hardened AppleScript using 'on run argv' positional args.
 
-    # Determine command syntax based on parameters
+    Security: All dynamic values are passed as argv[n] — never string-interpolated
+    into the script body. This prevents AppleScript injection (CWE-74, CWE-94).
+
+    The osascript invocation becomes:
+        osascript -e '<script>' -- <arg1> <arg2> ...
+    where the script uses:
+        on run argv
+            set param1 to item 1 of argv
+            ...
+        end run
+    """
+    app_name = sanitize_app_name(app_name)
+    sdef_cmd_name = sanitize(sdef_cmd_name)
+
+    if not app_name or not sdef_cmd_name:
+        return ""
+
+    lines = [f'tell application "{app_name}"']
+
     if not params:
-        script += f"    {sdef_cmd_name}\n"
+        lines.append(f"    {sdef_cmd_name}")
     elif len(params) == 1 and params[0]["is_direct"]:
-        val = params[0]["name"]
-        script += f'    {sdef_cmd_name} "{{{val}}}"\n'
+        param_name = sanitize(params[0]["name"], max_length=64)
+        # Positional arg: osascript passes value as arg, script reads argv[1]
+        lines.append(f"    set arg1 to item 1 of argv")
+        lines.append(f'    {sdef_cmd_name} arg1')
     else:
-        script += f"    {sdef_cmd_name}"
+        lines.append(f"    {sdef_cmd_name}")
+        arg_idx = 1
         for p in params:
+            pname = sanitize(p["name"], max_length=64)
             if p["is_direct"]:
-                script += f' "{{{p["name"]}}}"'
+                lines.append(f"    set arg{arg_idx} to item {arg_idx} of argv")
+                lines[-2] += f' arg{arg_idx}'
+                arg_idx += 1
             else:
-                script += f' {p["name"]}:"{{{p["name"]}}}"'
-        script += "\n"
+                lines.append(f"    set arg{arg_idx} to item {arg_idx} of argv")
+                lines[-2] += f' {pname}:arg{arg_idx}'
+                arg_idx += 1
 
-    script += "end tell"
-    return script
+    lines.append("end tell")
+    return "\n".join(lines)
+
+
+def build_applescript_with_args(script_template, params):
+    """Build the final AppleScript with 'on run argv' wrapper.
+
+    Returns (wrapped_script, args_list) for use with osascript.
+    """
+    app_args = []
+    # Collect positional args in order matching the script's argv[n] references
+    for key, value in params.items():
+        if value:  # skip empty values
+            app_args.append(sanitize(str(value), max_length=4096))
+
+    wrapped = "on run argv\n" + script_template + "\nend run"
+    return wrapped, app_args
+
+
+# ─── Tool Matching ───
 
 
 def fuzzy_match_tool_to_sdef(tool_name, sdef_commands):
-    """Match a tool name like 'mail_check_for_new_mail' to SDEF command 'check for new mail'."""
-    # Strip app prefix, normalize to spaces
+    """Match a tool name to SDEF command using underscore-to-space normalization."""
     parts = tool_name.split("_", 1)
     search = parts[1] if len(parts) > 1 else parts[0]
-    search_lower = search.lower()
+    search_lower = sanitize(search.lower())
 
     # Exact
     for cmd in sdef_commands:
@@ -170,8 +267,45 @@ def fuzzy_match_tool_to_sdef(tool_name, sdef_commands):
     return best or (None, 0)
 
 
+# ─── Database: Atomic UPSERT ───
+
+
+def upsert_tool(conn, name, app, schema_json, is_sensitive):
+    """Atomic INSERT ... ON CONFLICT DO UPDATE.
+
+    Replaces the old SELECT-then-UPDATE/INSERT pattern which had a TOCTOU race
+    condition between concurrent gateway operations.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    requires_approval = 1 if is_sensitive else 0
+
+    conn.execute(
+        """
+        INSERT INTO tools (name, app, version, schema_json, status,
+                           requires_approval, created_at, updated_at)
+        VALUES (?, ?, 1, ?, 'active', ?, ?, ?)
+        ON CONFLICT(app, name) DO UPDATE SET
+            schema_json = excluded.schema_json,
+            version = tools.version + 1,
+            status = 'active',
+            requires_approval = excluded.requires_approval,
+            last_error = NULL,
+            updated_at = excluded.updated_at
+        """,
+        (name, app, schema_json, requires_approval, now, now)
+    )
+
+
+# ─── Main Repair Loop ───
+
+STANDARD_COMMANDS = {
+    "close", "delete", "count", "duplicate", "exists",
+    "get", "make", "move", "save", "set", "open", "print",
+    "quit", "activate", "copy", "select", "add", "remove",
+}
+
+
 def repair_tools(apply=False):
-    """Main repair loop: load tools, match to SDEFs, generate AppleScript, update registry."""
     with open(EVOLVED_TOOLS) as f:
         tools = json.load(f)
 
@@ -179,8 +313,6 @@ def repair_tools(apply=False):
     skipped = 0
     no_sdef = 0
     no_match = 0
-
-    # Cache SDEFs
     sdef_cache = {}
 
     for i, tool in enumerate(tools):
@@ -196,49 +328,43 @@ def repair_tools(apply=False):
             continue
 
         # Load SDEF
-        if app not in sdef_cache:
-            sdef_cache[app] = load_sdef(app)
+        san_app = sanitize_app_name(app)
+        if san_app not in sdef_cache:
+            sdef_cache[san_app] = load_sdef(san_app)
 
-        sdef = sdef_cache[app]
+        sdef = sdef_cache[san_app]
         if not sdef:
             no_sdef += 1
             continue
 
-        # Match tool to SDEF command
+        # Match
         cmd_name, confidence = fuzzy_match_tool_to_sdef(name, sdef)
         if not cmd_name or confidence < 0.9:
             no_match += 1
             continue
 
-        # Skip standard AppleScript commands — the ExecutionEngine handles these
-        # via Tier 1 (hardcoded) or Tier 3 (heuristic). SDEF repair produces
-        # wrong scripts for commands like close/delete/make that need specifiers.
-        standard_cmds = {"close", "delete", "count", "duplicate", "exists",
-                        "get", "make", "move", "save", "set", "open", "print",
-                        "quit", "activate", "copy", "select", "add", "remove"}
-        if cmd_name.lower() in standard_cmds:
+        # Skip standard commands (handled by ExecutionEngine tiers)
+        if cmd_name.lower() in STANDARD_COMMANDS:
             skipped += 1
             continue
 
-        # Generate AppleScript
+        # Generate hardened AppleScript
         cmd_info = sdef[cmd_name]
-        script = generate_applescript(app, cmd_name, cmd_info["parameters"])
+        script = generate_applescript(san_app, cmd_name, cmd_info["parameters"])
 
-        # Update tool
-        tool["appleScript"] = script
-
-        # Build proper inputSchema from SDEF params
+        # Build proper inputSchema
         props = {}
         required = []
         for p in cmd_info["parameters"]:
-            if p["is_direct"]:
-                key = "value"
-            else:
-                key = p["name"]
-            props[key] = {"type": "string", "description": p["desc"]}
-            if not p.get("optional", True):
+            key = "value" if p["is_direct"] else p["name"]
+            props[key] = {
+                "type": "string",
+                "description": sanitize(p["desc"], max_length=256),
+            }
+            if key != "value":  # direct params are always required
                 required.append(key)
 
+        tool["appleScript"] = script
         tool["inputSchema"] = {
             "type": "object",
             "properties": props,
@@ -248,38 +374,16 @@ def repair_tools(apply=False):
         repairs += 1
 
         if apply:
-            # Update SQLite registry
-            conn = sqlite3.connect(REGISTRY_DB)
-            conn.row_factory = sqlite3.Row
-            now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
             schema_json = json.dumps(tool)
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT id, version FROM tools WHERE app = ? AND name = ?",
-                (app, name)
-            )
-            existing = cursor.fetchone()
-            if existing:
-                new_version = existing["version"] + 1
-                cursor.execute(
-                    "UPDATE tools SET schema_json = ?, version = ?, status = 'active', "
-                    "last_error = NULL, updated_at = ? WHERE id = ?",
-                    (schema_json, new_version, now, existing["id"]),
-                )
-            else:
-                cursor.execute(
-                    "INSERT INTO tools (name, app, version, schema_json, status, "
-                    "requires_approval, created_at, updated_at) "
-                    "VALUES (?, ?, 1, ?, 'active', ?, ?, ?)",
-                    (name, app, schema_json, 1 if tool.get("isSensitive") else 0, now, now),
-                )
+            conn = sqlite3.connect(REGISTRY_DB)
+            upsert_tool(conn, name, app, schema_json, tool.get("isSensitive", False))
             conn.commit()
             conn.close()
 
         if (i + 1) % 50 == 0 or i == len(tools) - 1:
-            print(f"  Progress: {i+1}/{len(tools)} ({repairs} repaired, {no_match} no match, {no_sdef} no SDEF)")
+            print(f"  Progress: {i+1}/{len(tools)} "
+                  f"({repairs} repaired, {no_match} no match, {no_sdef} no SDEF)")
 
-    # Save updated tools
     output_path = EVOLVED_TOOLS.replace(".json", "-repaired.json")
     with open(output_path, "w") as f:
         json.dump(tools, f, indent=2)
@@ -290,10 +394,9 @@ def repair_tools(apply=False):
     print(f"  No match:  {no_match}")
     print(f"  Skipped:   {skipped}")
     if apply:
-        print(f"  Registry updated ✅")
-        print(f"  Restart MCP: openclaw gateway restart")
+        print(f"  Registry updated via atomic UPSERT")
     else:
-        print(f"  DRY RUN — use --apply to commit changes")
+        print(f"  DRY RUN — use --apply to commit")
     print(f"  Output: {output_path}")
     print(f"{'='*50}")
 

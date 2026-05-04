@@ -235,10 +235,12 @@ actor ExecutionEngine {
         
         // Use the stored prebuilt script if available (from Repairman-corrected tool schema)
         let script: String
+        let positionalArgs: [String]
         if let prebuilt = prebuiltScript {
-            script = substituteParameters(in: prebuilt, params: parameters)
+            (script, positionalArgs) = buildPositionalScript(prebuilt, params: parameters)
         } else {
             script = buildAppleScript(app: app, command: intentName, parameters: parameters)
+            positionalArgs = []
         }
         
         // Sanitization check: flag dangerous patterns
@@ -247,12 +249,51 @@ actor ExecutionEngine {
             return nil
         }
         
+        // Build osascript args: -e script -- arg1 arg2 ...
+        var osascriptArgs = ["-e", script]
+        if !positionalArgs.isEmpty {
+            osascriptArgs.append("--")
+            osascriptArgs.append(contentsOf: positionalArgs)
+        }
+        
         return await runSubprocess(
             executable: "/usr/bin/osascript",
-            arguments: ["-e", script],
+            arguments: osascriptArgs,
             timeoutSeconds: 10,
             label: "AppleScript"
         )
+    }
+    
+    /// Wraps a prebuilt AppleScript in 'on run argv' and extracts positional args.
+    /// Security: dynamic values are passed as argv[n], never string-interpolated.
+    /// This prevents AppleScript injection (CWE-74/94) through parameter values.
+    private func buildPositionalScript(_ prebuilt: String, params: [String: String]) -> (String, [String]) {
+        // The prebuilt script uses {key} placeholders. Convert to argv[n] references.
+        var script = prebuilt
+        var positionalArgs: [String] = []
+        
+        for (key, value) in params.sorted(by: { $0.key < $1.key }) {
+            if value.isEmpty { continue }
+            let sanitized = sanitizeForAppleScript(value)
+            positionalArgs.append(sanitized)
+            let argIdx = positionalArgs.count
+            script = script.replacingOccurrences(of: "{\(key)}", with: "(item \(argIdx) of argv)")
+        }
+        
+        let wrapped = "on run argv\n" + script + "\nend run"
+        return (wrapped, positionalArgs)
+    }
+    
+    /// Whitelist-based sanitizer for values passed to AppleScript.
+    /// Strips characters that could enable injection through string boundaries.
+    private func sanitizeForAppleScript(_ value: String) -> String {
+        let allowed = CharacterSet(charactersIn:
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "0123456789 _-.,:;!?@#$%&()+=[]{}|/~`^<>" +
+            "\n\t\r"
+        )
+        let filtered = String(value.unicodeScalars.filter { allowed.contains($0) })
+        return String(filtered.prefix(1024)).trimmingCharacters(in: .whitespaces)
     }
     
     /// Substitutes {paramName} placeholders in a prebuilt AppleScript with actual values.

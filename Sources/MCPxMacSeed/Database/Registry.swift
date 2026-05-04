@@ -40,6 +40,20 @@ actor Registry {
             try db.create(index: "idx_tool_identity", on: "tools", columns: ["app", "name"], unique: true)
             try db.create(index: "idx_tools_status", on: "tools", columns: ["status"])
         }
+        migrator.registerMigration("v2_audit_log") { db in
+            try db.create(table: "audit_log") { t in
+                t.autoIncrementedPrimaryKey("id")
+                t.column("action", .text).notNull()                    // execute, approve, reject, repair, register
+                t.column("tool_name", .text).notNull()
+                t.column("app", .text).notNull()
+                t.column("parameters_json", .text)                    // redacted parameters
+                t.column("result", .text).notNull()                   // success, failure, pending, approved, rejected
+                t.column("session_id", .text)                         // correlation ID for multi-step flows
+                t.column("timestamp", .text).notNull().defaults(sql: "(datetime('now'))")
+            }
+            try db.create(index: "idx_audit_timestamp", on: "audit_log", columns: ["timestamp"])
+            try db.create(index: "idx_audit_tool", on: "audit_log", columns: ["tool_name", "app"])
+        }
         try migrator.migrate(queue)
     }
     
@@ -194,6 +208,60 @@ actor Registry {
                 throw RegistryError.toolNotFound(id: id)
             }
         }
+    }
+    
+    // MARK: - Audit Log (Immutable Ledger)
+    
+    /// Records a state-altering action to the append-only audit log.
+    /// Parameters are redacted of sensitive values (paths, emails, etc.) before storage.
+    /// Each entry is permanently recorded — this table is never pruned or updated.
+    func logAuditEntry(
+        action: String,
+        toolName: String,
+        app: String,
+        parameters: [String: String]?,
+        result: String,
+        sessionID: String? = nil
+    ) throws {
+        try dbQueue.write { db in
+            let paramsJSON: String?
+            if let p = parameters {
+                let redacted = redactSensitiveParams(p)
+                if let data = try? JSONEncoder().encode(redacted),
+                   let json = String(data: data, encoding: .utf8) {
+                    paramsJSON = json
+                } else {
+                    paramsJSON = nil
+                }
+            } else {
+                paramsJSON = nil
+            }
+            
+            try db.execute(sql: """
+                INSERT INTO audit_log (action, tool_name, app, parameters_json, result, session_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """, arguments: [action, toolName, app, paramsJSON, result, sessionID])
+        }
+    }
+    
+    /// Redacts potentially sensitive parameter values (paths, email addresses, etc.).
+    private func redactSensitiveParams(_ params: [String: String]) -> [String: String] {
+        var redacted = params
+        let sensitiveKeys = ["path", "file", "url", "email", "password", "key", "token", "account"]
+        for key in redacted.keys {
+            for sensitive in sensitiveKeys {
+                if key.lowercased().contains(sensitive) {
+                    let val = redacted[key] ?? ""
+                    if val.count > 8 {
+                        redacted[key] = String(val.prefix(4)) + "...[redacted]"
+                    } else {
+                        redacted[key] = "[redacted]"
+                    }
+                    break
+                }
+            }
+        }
+        return redacted
     }
     
     // MARK: - Private Helpers
