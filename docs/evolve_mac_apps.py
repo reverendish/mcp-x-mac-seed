@@ -61,43 +61,68 @@ def extract_sdefs(target_apps=None):
 
 # ─── Step 2: Parse SDEF XML to commands ───
 def parse_sdef(app_data):
-    """Convert raw SDEF XML to structured command list."""
-    namespaces = {"sdef": "http://developer.apple.com/ns/sdef"}
+    """Convert raw SDEF XML to structured command list.
+    Uses regex to find commands since the XML uses xi:include and namespaces
+    that make standard XML parsing unreliable.
+    """
+    import re
     commands = []
     
-    try:
-        root = ET.fromstring(app_data["sdef_xml"])
+    xml = app_data["sdef_xml"]
+    
+    # Find all <command> elements with their attributes
+    pattern = r'<command\s+name="([^"]*)"(?:\s+hidden="([^"]*)")?[^>]*\s*(?:description="([^"]*)")?'
+    
+    for match in re.finditer(pattern, xml):
+        name = match.group(1)
+        hidden = match.group(2) == "yes"
+        desc = match.group(3) or ""
         
-        for cmd in root.iter("{http://developer.apple.com/ns/sdef}command"):
-            name = cmd.get("name", "")
-            if cmd.get("hidden", "no") == "yes" or not name:
+        if hidden or not name:
+            continue
+        
+        # Find parameters within this command tag
+        # Get the position of this command end tag or self-closing
+        cmd_start = match.start()
+        cmd_end_pos = xml.find("/>", cmd_start)
+        if cmd_end_pos == -1 or cmd_end_pos > cmd_start + 500:
+            cmd_end_pos = xml.find(f"</command>", cmd_start)
+            if cmd_end_pos == -1:
                 continue
-            
-            params = []
-            for p in cmd.findall("{http://developer.apple.com/ns/sdef}parameter"):
-                params.append({
-                    "name": p.get("name", ""),
-                    "type": p.get("type", "any"),
-                    "description": p.get("description", ""),
-                    "optional": p.get("optional", "no") == "yes"
-                })
-            
-            dp = cmd.find("{http://developer.apple.com/ns/sdef}direct-parameter")
-            if dp is not None:
-                params.insert(0, {
-                    "name": "direct",
-                    "type": dp.get("type", "any"),
-                    "description": dp.get("description", ""),
-                    "optional": False
-                })
-            
-            commands.append({
-                "name": name,
-                "description": cmd.get("description", ""),
-                "parameters": params
+            cmd_end_pos += 10
+        elif cmd_end_pos > cmd_start + 10:
+            cmd_end_pos += 2
+        else:
+            continue
+        
+        cmd_section = xml[cmd_start:cmd_end_pos]
+        
+        params = []
+        
+        # Direct parameter
+        dp_match = re.search(r'<direct-parameter[^>]*type="([^"]*)"[^>]*description="([^"]*)"', cmd_section)
+        if dp_match:
+            params.append({
+                "name": "direct",
+                "type": dp_match.group(1),
+                "description": dp_match.group(2),
+                "optional": False
             })
-    except Exception:
-        pass
+        
+        # Regular parameters
+        for p_match in re.finditer(r'<parameter\s+name="([^"]*)"[^>]*type="([^"]*)"[^>]*(?:description="([^"]*)")?[^>]*(?:optional="([^"]*)")?', cmd_section):
+            params.append({
+                "name": p_match.group(1),
+                "type": p_match.group(2),
+                "description": p_match.group(3) or "",
+                "optional": p_match.group(4) == "yes"
+            })
+        
+        commands.append({
+            "name": name,
+            "description": desc,
+            "parameters": params
+        })
     
     return commands
 

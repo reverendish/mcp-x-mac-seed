@@ -1,0 +1,4859 @@
+[
+  {
+    "name": "automator_close",
+    "description": "Execute 'close' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_count",
+    "description": "Execute 'count' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_delete",
+    "description": "Execute 'delete' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_duplicate",
+    "description": "Execute 'duplicate' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_exists",
+    "description": "Execute 'exists' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_get",
+    "description": "Execute 'get' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_make",
+    "description": "Execute 'make' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "automator_move",
+    "description": "Execute 'move' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_open",
+    "description": "Execute 'open' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_print",
+    "description": "Execute 'print' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_quit",
+    "description": "Execute 'quit' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "automator_save",
+    "description": "Execute 'save' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_set",
+    "description": "Execute 'set' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_add",
+    "description": "Execute 'add' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (any)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_execute",
+    "description": "Execute 'execute' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "workflow",
+          "description": "direct parameter (workflow)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "automator_remove",
+    "description": "Execute 'remove' on Automator",
+    "app": "Automator",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (any)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "calendar_create_calendar",
+    "description": "Execute 'create calendar' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_reload_calendars",
+    "description": "Execute 'reload calendars' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_switch_view",
+    "description": "Execute 'switch view' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_view_calendar",
+    "description": "Execute 'view calendar' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_geturl",
+    "description": "Execute 'GetURL' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_show",
+    "description": "Execute 'show' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_make",
+    "description": "Execute 'make' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "calendar_save",
+    "description": "Execute 'save' on Calendar",
+    "app": "Calendar",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_make",
+    "description": "Execute 'make' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_add",
+    "description": "Execute 'add' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_remove",
+    "description": "Execute 'remove' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_save",
+    "description": "Execute 'save' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_action_property",
+    "description": "Execute 'action property' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_action_title",
+    "description": "Execute 'action title' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_perform_action",
+    "description": "Execute 'perform action' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "contacts_should_enable_action",
+    "description": "Execute 'should enable action' on Contacts",
+    "app": "Contacts",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_delete",
+    "description": "Execute 'delete' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_duplicate",
+    "description": "Execute 'duplicate' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_move",
+    "description": "Execute 'move' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_bounce",
+    "description": "Execute 'bounce' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "message",
+          "description": "direct parameter (message)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "mail_check_for_new_mail",
+    "description": "Execute 'check for new mail' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "for": {
+          "type": "account",
+          "description": "for parameter (account)"
+        }
+      },
+      "required": [
+        "for"
+      ]
+    }
+  },
+  {
+    "name": "mail_delete",
+    "description": "Execute 'delete' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_duplicate",
+    "description": "Execute 'duplicate' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_extract_name_from",
+    "description": "Execute 'extract name from' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_extract_address_from",
+    "description": "Execute 'extract address from' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_forward",
+    "description": "Execute 'forward' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "message",
+          "description": "direct parameter (message)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "mail_geturl",
+    "description": "Execute 'GetURL' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_import_mail_mailbox",
+    "description": "Execute 'import Mail mailbox' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "file",
+          "description": "at parameter (file)"
+        }
+      },
+      "required": [
+        "at"
+      ]
+    }
+  },
+  {
+    "name": "mail_mailto",
+    "description": "Execute 'mailto' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_move",
+    "description": "Execute 'move' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_perform_mail_action_with_messages",
+    "description": "Execute 'perform mail action with messages' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "mail_redirect",
+    "description": "Execute 'redirect' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "message",
+          "description": "direct parameter (message)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "mail_reply",
+    "description": "Execute 'reply' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "message",
+          "description": "direct parameter (message)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "mail_send",
+    "description": "Execute 'send' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "outgoing message",
+          "description": "direct parameter (outgoing message)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "mail_synchronize",
+    "description": "Execute 'synchronize' on Mail",
+    "app": "Mail",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "with": {
+          "type": "account",
+          "description": "with parameter (account)"
+        }
+      },
+      "required": [
+        "with"
+      ]
+    }
+  },
+  {
+    "name": "messages_send",
+    "description": "Execute 'send' on Messages",
+    "app": "Messages",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "messages_login",
+    "description": "Execute 'login' on Messages",
+    "app": "Messages",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "messages_logout",
+    "description": "Execute 'logout' on Messages",
+    "app": "Messages",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_print",
+    "description": "Execute 'print' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_close",
+    "description": "Execute 'close' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_count",
+    "description": "Execute 'count' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_delete",
+    "description": "Execute 'delete' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_duplicate",
+    "description": "Execute 'duplicate' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_exists",
+    "description": "Execute 'exists' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_make",
+    "description": "Execute 'make' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "music_move",
+    "description": "Execute 'move' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "playlist",
+          "description": "direct parameter (playlist)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_open",
+    "description": "Execute 'open' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_run",
+    "description": "Execute 'run' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_quit",
+    "description": "Execute 'quit' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_save",
+    "description": "Execute 'save' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "music_add",
+    "description": "Execute 'add' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_back_track",
+    "description": "Execute 'back track' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_convert",
+    "description": "Execute 'convert' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_download",
+    "description": "Execute 'download' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_export",
+    "description": "Execute 'export' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_fast_forward",
+    "description": "Execute 'fast forward' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_next_track",
+    "description": "Execute 'next track' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_pause",
+    "description": "Execute 'pause' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_play",
+    "description": "Execute 'play' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_playpause",
+    "description": "Execute 'playpause' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_previous_track",
+    "description": "Execute 'previous track' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_refresh",
+    "description": "Execute 'refresh' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_resume",
+    "description": "Execute 'resume' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_reveal",
+    "description": "Execute 'reveal' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_rewind",
+    "description": "Execute 'rewind' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_search",
+    "description": "Execute 'search' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_select",
+    "description": "Execute 'select' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_stop",
+    "description": "Execute 'stop' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "music_open_location",
+    "description": "Execute 'open location' on Music",
+    "app": "Music",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (text)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "notes_open_note_location",
+    "description": "Execute 'open note location' on Notes",
+    "app": "Notes",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "notes_show",
+    "description": "Execute 'show' on Notes",
+    "app": "Notes",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_count",
+    "description": "Execute 'count' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_exists",
+    "description": "Execute 'exists' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_open",
+    "description": "Execute 'open' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_quit",
+    "description": "Execute 'quit' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_import",
+    "description": "Execute 'import' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_export",
+    "description": "Execute 'export' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_duplicate",
+    "description": "Execute 'duplicate' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_make",
+    "description": "Execute 'make' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_delete",
+    "description": "Execute 'delete' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_add",
+    "description": "Execute 'add' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_start_slideshow",
+    "description": "Execute 'start slideshow' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_stop_slideshow",
+    "description": "Execute 'stop slideshow' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_next_slide",
+    "description": "Execute 'next slide' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_previous_slide",
+    "description": "Execute 'previous slide' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_pause_slideshow",
+    "description": "Execute 'pause slideshow' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_resume_slideshow",
+    "description": "Execute 'resume slideshow' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_spotlight",
+    "description": "Execute 'spotlight' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "photos_search",
+    "description": "Execute 'search' on Photos",
+    "app": "Photos",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "preview_close",
+    "description": "Execute 'close' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_count",
+    "description": "Execute 'count' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_delete",
+    "description": "Execute 'delete' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_duplicate",
+    "description": "Execute 'duplicate' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_exists",
+    "description": "Execute 'exists' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_get",
+    "description": "Execute 'get' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_make",
+    "description": "Execute 'make' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "preview_move",
+    "description": "Execute 'move' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_open",
+    "description": "Execute 'open' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_print",
+    "description": "Execute 'print' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_quit",
+    "description": "Execute 'quit' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "preview_save",
+    "description": "Execute 'save' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "preview_set",
+    "description": "Execute 'set' on Preview",
+    "app": "Preview",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "quicktime_player_open_url",
+    "description": "Execute 'open URL' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_play",
+    "description": "Execute 'play' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_start",
+    "description": "Execute 'start' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_pause",
+    "description": "Execute 'pause' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_resume",
+    "description": "Execute 'resume' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_stop",
+    "description": "Execute 'stop' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_step_backward",
+    "description": "Execute 'step backward' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_step_forward",
+    "description": "Execute 'step forward' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_trim",
+    "description": "Execute 'trim' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_present",
+    "description": "Execute 'present' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_new_movie_recording",
+    "description": "Execute 'new movie recording' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_new_audio_recording",
+    "description": "Execute 'new audio recording' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_new_screen_recording",
+    "description": "Execute 'new screen recording' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "quicktime_player_export",
+    "description": "Execute 'export' on QuickTime Player",
+    "app": "QuickTime Player",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "reminders_show",
+    "description": "Execute 'show' on Reminders",
+    "app": "Reminders",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "shortcuts_run",
+    "description": "Execute 'run' on Shortcuts",
+    "app": "Shortcuts",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "system_settings_reveal",
+    "description": "Execute 'reveal' on System Settings",
+    "app": "System Settings",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "system_settings_authorize",
+    "description": "Execute 'authorize' on System Settings",
+    "app": "System Settings",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "system_settings_timedload",
+    "description": "Execute 'timedLoad' on System Settings",
+    "app": "System Settings",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "pane",
+          "description": "direct parameter (pane)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_close",
+    "description": "Execute 'close' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_count",
+    "description": "Execute 'count' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_delete",
+    "description": "Execute 'delete' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_duplicate",
+    "description": "Execute 'duplicate' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_exists",
+    "description": "Execute 'exists' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_make",
+    "description": "Execute 'make' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "tv_move",
+    "description": "Execute 'move' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "playlist",
+          "description": "direct parameter (playlist)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_open",
+    "description": "Execute 'open' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_run",
+    "description": "Execute 'run' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_quit",
+    "description": "Execute 'quit' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_save",
+    "description": "Execute 'save' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "tv_add",
+    "description": "Execute 'add' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_back_track",
+    "description": "Execute 'back track' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_convert",
+    "description": "Execute 'convert' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_download",
+    "description": "Execute 'download' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_fast_forward",
+    "description": "Execute 'fast forward' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_next_track",
+    "description": "Execute 'next track' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_pause",
+    "description": "Execute 'pause' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_play",
+    "description": "Execute 'play' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_playpause",
+    "description": "Execute 'playpause' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_previous_track",
+    "description": "Execute 'previous track' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_refresh",
+    "description": "Execute 'refresh' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_resume",
+    "description": "Execute 'resume' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_reveal",
+    "description": "Execute 'reveal' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_rewind",
+    "description": "Execute 'rewind' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_search",
+    "description": "Execute 'search' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_select",
+    "description": "Execute 'select' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_stop",
+    "description": "Execute 'stop' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "tv_open_location",
+    "description": "Execute 'open location' on TV",
+    "app": "TV",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (text)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_close",
+    "description": "Execute 'close' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_count",
+    "description": "Execute 'count' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_delete",
+    "description": "Execute 'delete' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_duplicate",
+    "description": "Execute 'duplicate' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_exists",
+    "description": "Execute 'exists' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_get",
+    "description": "Execute 'get' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_make",
+    "description": "Execute 'make' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "textedit_move",
+    "description": "Execute 'move' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_open",
+    "description": "Execute 'open' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_print",
+    "description": "Execute 'print' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_quit",
+    "description": "Execute 'quit' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "textedit_save",
+    "description": "Execute 'save' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "textedit_set",
+    "description": "Execute 'set' on TextEdit",
+    "app": "TextEdit",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "bluetooth_file_exchange_browse",
+    "description": "Execute 'browse' on Bluetooth File Exchange",
+    "app": "Bluetooth File Exchange",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "string",
+          "description": "device parameter (text)"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "bluetooth_file_exchange_send",
+    "description": "Execute 'send' on Bluetooth File Exchange",
+    "app": "Bluetooth File Exchange",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "file",
+          "description": "file parameter (file)"
+        },
+        "to device": {
+          "type": "string",
+          "description": "to device parameter (text)"
+        }
+      },
+      "required": [
+        "file"
+      ]
+    }
+  },
+  {
+    "name": "console_selectdevice",
+    "description": "Execute 'selectDevice' on Console",
+    "app": "Console",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "screen_sharing_geturl",
+    "description": "Execute 'GetURL' on Screen Sharing",
+    "app": "Screen Sharing",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "script_editor_close",
+    "description": "Execute 'close' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_count",
+    "description": "Execute 'count' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_delete",
+    "description": "Execute 'delete' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_duplicate",
+    "description": "Execute 'duplicate' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_exists",
+    "description": "Execute 'exists' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_get",
+    "description": "Execute 'get' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_make",
+    "description": "Execute 'make' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_move",
+    "description": "Execute 'move' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_open",
+    "description": "Execute 'open' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_print",
+    "description": "Execute 'print' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_quit",
+    "description": "Execute 'quit' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_save",
+    "description": "Execute 'save' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_set",
+    "description": "Execute 'set' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_check_syntax",
+    "description": "Execute 'check syntax' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_compile",
+    "description": "Execute 'compile' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "script_editor_save",
+    "description": "Execute 'save' on Script Editor",
+    "app": "Script Editor",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_close",
+    "description": "Execute 'close' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_count",
+    "description": "Execute 'count' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_delete",
+    "description": "Execute 'delete' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_duplicate",
+    "description": "Execute 'duplicate' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_exists",
+    "description": "Execute 'exists' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_get",
+    "description": "Execute 'get' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_make",
+    "description": "Execute 'make' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "system_information_move",
+    "description": "Execute 'move' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_open",
+    "description": "Execute 'open' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_print",
+    "description": "Execute 'print' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_quit",
+    "description": "Execute 'quit' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "system_information_save",
+    "description": "Execute 'save' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_set",
+    "description": "Execute 'set' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "system_information_send",
+    "description": "Execute 'send' on System Information",
+    "app": "System Information",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "terminal_open",
+    "description": "Execute 'open' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_close",
+    "description": "Execute 'close' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_save",
+    "description": "Execute 'save' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "terminal_print",
+    "description": "Execute 'print' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_quit",
+    "description": "Execute 'quit' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_count",
+    "description": "Execute 'count' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_delete",
+    "description": "Execute 'delete' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_duplicate",
+    "description": "Execute 'duplicate' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_exists",
+    "description": "Execute 'exists' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_make",
+    "description": "Execute 'make' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_move",
+    "description": "Execute 'move' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_do_script",
+    "description": "Execute 'do script' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "terminal_get_url",
+    "description": "Execute 'get URL' on Terminal",
+    "app": "Terminal",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (text)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_save",
+    "description": "Execute 'save' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_open",
+    "description": "Execute 'open' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_close",
+    "description": "Execute 'close' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_quit",
+    "description": "Execute 'quit' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_count",
+    "description": "Execute 'count' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_delete",
+    "description": "Execute 'delete' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_duplicate",
+    "description": "Execute 'duplicate' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_exists",
+    "description": "Execute 'exists' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_make",
+    "description": "Execute 'make' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_move",
+    "description": "Execute 'move' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "google_chrome_print",
+    "description": "Execute 'print' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_reload",
+    "description": "Execute 'reload' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_go_back",
+    "description": "Execute 'go back' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_go_forward",
+    "description": "Execute 'go forward' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_select_all",
+    "description": "Execute 'select all' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_cut_selection",
+    "description": "Execute 'cut selection' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_copy_selection",
+    "description": "Execute 'copy selection' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_paste_selection",
+    "description": "Execute 'paste selection' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_undo",
+    "description": "Execute 'undo' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_redo",
+    "description": "Execute 'redo' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_stop",
+    "description": "Execute 'stop' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_view_source",
+    "description": "Execute 'view source' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "google_chrome_execute",
+    "description": "Execute 'execute' on Google Chrome",
+    "app": "Google Chrome",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "logic_pro_x_renderpreview",
+    "description": "Execute 'renderPreview' on Logic Pro X",
+    "app": "Logic Pro X",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "file",
+          "description": "direct parameter (file)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "safari_add_reading_list_item",
+    "description": "Execute 'add reading list item' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_do_javascript",
+    "description": "Execute 'do JavaScript' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_email_contents",
+    "description": "Execute 'email contents' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_search_the_web",
+    "description": "Execute 'search the web' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_show_bookmarks",
+    "description": "Execute 'show bookmarks' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_show_extensions_preferences",
+    "description": "Execute 'show extensions preferences' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_dispatch_message_to_extension",
+    "description": "Execute 'dispatch message to extension' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_sync_all_plist_to_disk",
+    "description": "Execute 'sync all plist to disk' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_show_privacy_report",
+    "description": "Execute 'show privacy report' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "safari_show_credit_card_settings",
+    "description": "Execute 'show credit card settings' on Safari",
+    "app": "Safari",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_next_track",
+    "description": "Execute 'next track' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_previous_track",
+    "description": "Execute 'previous track' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_playpause",
+    "description": "Execute 'playpause' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_pause",
+    "description": "Execute 'pause' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_play",
+    "description": "Execute 'play' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "spotify_play_track",
+    "description": "Execute 'play track' on Spotify",
+    "app": "Spotify",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "vlc_close",
+    "description": "Execute 'close' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_count",
+    "description": "Execute 'count' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_delete",
+    "description": "Execute 'delete' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_duplicate",
+    "description": "Execute 'duplicate' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_exists",
+    "description": "Execute 'exists' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_get",
+    "description": "Execute 'get' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_make",
+    "description": "Execute 'make' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "type",
+          "description": "new parameter (type)"
+        }
+      },
+      "required": [
+        "new"
+      ]
+    }
+  },
+  {
+    "name": "vlc_move",
+    "description": "Execute 'move' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_open",
+    "description": "Execute 'open' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_print",
+    "description": "Execute 'print' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "alias",
+          "description": "direct parameter (alias)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_quit",
+    "description": "Execute 'quit' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "saving": {
+          "type": "savo",
+          "description": "saving parameter (savo)"
+        }
+      },
+      "required": [
+        "saving"
+      ]
+    }
+  },
+  {
+    "name": "vlc_save",
+    "description": "Execute 'save' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_set",
+    "description": "Execute 'set' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_activate_menu_item",
+    "description": "Execute 'activate menu item' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_fullscreen",
+    "description": "Execute 'fullscreen' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_geturl",
+    "description": "Execute 'GetURL' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_move_menu_focus_down",
+    "description": "Execute 'move menu focus down' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_move_menu_focus_left",
+    "description": "Execute 'move menu focus left' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_move_menu_focus_right",
+    "description": "Execute 'move menu focus right' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_move_menu_focus_up",
+    "description": "Execute 'move menu focus up' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_mute",
+    "description": "Execute 'mute' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_next",
+    "description": "Execute 'next' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_openurl",
+    "description": "Execute 'OpenURL' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_play",
+    "description": "Execute 'play' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_previous",
+    "description": "Execute 'previous' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_step_backward",
+    "description": "Execute 'step backward' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_step_forward",
+    "description": "Execute 'step forward' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_stop",
+    "description": "Execute 'stop' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_volumedown",
+    "description": "Execute 'volumeDown' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "vlc_volumeup",
+    "description": "Execute 'volumeUp' on VLC",
+    "app": "VLC",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_open",
+    "description": "Execute 'open' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_close",
+    "description": "Execute 'close' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_quit",
+    "description": "Execute 'quit' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_count",
+    "description": "Execute 'count' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_delete",
+    "description": "Execute 'delete' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_exists",
+    "description": "Execute 'exists' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_make",
+    "description": "Execute 'make' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_move",
+    "description": "Execute 'move' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_hack",
+    "description": "Execute 'hack' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_create_temporary_debugging_workspace",
+    "description": "Execute 'create temporary debugging workspace' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "xcode_build",
+    "description": "Execute 'build' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_clean",
+    "description": "Execute 'clean' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_stop",
+    "description": "Execute 'stop' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_run",
+    "description": "Execute 'run' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_test",
+    "description": "Execute 'test' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_attach",
+    "description": "Execute 'attach' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  },
+  {
+    "name": "xcode_debug",
+    "description": "Execute 'debug' on Xcode",
+    "app": "Xcode",
+    "strategy": "applescript",
+    "isSensitive": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "direct": {
+          "type": "string",
+          "description": "direct parameter (specifier)"
+        }
+      },
+      "required": [
+        "direct"
+      ]
+    }
+  }
+]

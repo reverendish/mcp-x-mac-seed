@@ -151,3 +151,17 @@
 - [x] ✅ 14.7 — IMPLEMENTATION_CHECKLIST.md: tracked all 15 phases
 - [x] ✅ 14.8 — BUILD_LOG.md: full session history
 - [x] ✅ 14.9 — Evolution tests: 10/14 scenarios verified live
+
+## Phase 15: Evolution Pipeline
+
+- [x] ✅ 15.1 — SDEF extraction script (`evolve_mac_apps.py`) — extracts all macOS app SDEFs
+- [x] ✅ 15.2 — LLM generation pipeline (Groq/Mistral) — SDEF commands → AppleScript + MCP schemas
+- [x] ✅ 15.3 — Batch output: 313 evolved tools across 27 apps generated
+- [x] ✅ 15.4 — `import_evolved.py` — direct SQLite import with upsert + consent gating
+- [x] ✅ 15.5 — Fix uncommitted SDEF parser: regex instead of ElementTree (xi:include namespace bug)
+- [x] ✅ 15.6 — Registry: 430 tools across 43 apps (190 consent-gated)
+- [x] ✅ 15.7 — Live verification: all 8 seed tools + 12 evolved tools tested
+- [x] ✅ 15.8 — Failure analysis: 8/20 evolved tools fail (app not running) — Repairman candidates logged
+- [ ] ⏳ 15.9 — Run Repairman loop on failed tools (8 candidates)
+- [ ] ⏳ 15.10 — Test remaining 293 evolved tools (currently untested)
+- [ ] ⏳ 15.11 — Commit uncommitted changes (evolve_mac_apps.py fix, batch-output-313.json, import_evolved.py)

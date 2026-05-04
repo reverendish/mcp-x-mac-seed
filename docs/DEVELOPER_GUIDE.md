@@ -1,4 +1,4 @@
-# MCP-x-Mac Seed Server — Developer Guide
+# MCP-x-Mac-Seed — Developer Guide
 
 ## Prerequisites
 
@@ -49,6 +49,12 @@ mcp-x-mac-seed/
 └── docs/
     ├── ARCHITECTURE.md
     ├── DEVELOPER_GUIDE.md
+    ├── EVOLUTION_GUIDE.md
+    ├── OPENCLAW_INTEGRATION.md
+    ├── evolutions/
+    │   ├── evolve_mac_apps.py           # Batch SDEF→Tool generation
+    │   ├── batch-output-313.json        # 313 evolved AppleScript tools
+    │   └── import_evolved.py            # Import batch output into registry
     ├── checklists/IMPLEMENTATION_CHECKLIST.md
     ├── architecture/ADR.md
     ├── testing/TEST_PLAN.md
@@ -91,6 +97,65 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
 # The registry database is at:
 # ~/Library/Application Support/MCPxMacSeed/tools.db
 ```
+
+## Evolution Workflow
+
+The evolution pipeline has 3 steps:
+
+### Step 1: Extract SDEFs
+
+Extract AppleScript dictionaries from all installed macOS apps:
+
+```bash
+python3 docs/evolutions/evolve_mac_apps.py --groq-key YOUR_KEY
+```
+
+This bypasses the LLM generation step and just extracts raw SDEF data into
+`mac_app_sdefs.json` on your Desktop. For the full pipeline (SDEF → LLM → tools),
+it also runs with `--mistral-key` for Mistral's free tier (1B tokens).
+
+### Step 2: Generate Tool Schemas
+
+The script feeds each app's SDEF commands to an LLM which generates:
+- AppleScript command mappings
+- MCP tool schemas with proper parameter types
+- Trust/sensitivity classification
+
+Output: `docs/evolutions/batch-output-313.json` (or custom filename)
+
+### Step 3: Import into Registry
+
+```bash
+# Preview what will be imported (dry-run)
+python3 docs/evolutions/import_evolved.py --dry-run
+
+# Import for real
+python3 docs/evolutions/import_evolved.py
+
+# Import from custom source
+python3 docs/evolutions/import_evolved.py --source my_tools.json
+```
+
+The import script:
+- Reads evolved tools from JSON
+- Constructs proper MCP Tool inputSchema from the evolved data
+- Inserts into the SQLite registry with upsert (version increment on re-import)
+- Sets consent gates for sensitive tools (delete, send, make, save, etc.)
+
+### Step 4: Restart & Verify
+
+```bash
+openclaw gateway restart
+
+# Verify tools are registered
+# The registry should show 430+ tools across 43+ apps
+```
+
+### Step 5: Repairman Loop (Ongoing)
+
+Not all generated tools will work first try. The Repairman captures failures and
+feeds the app's SDEF back to the agent for correction. This is the self-healing
+loop — the whole point of the evolution architecture.
 
 ## Adding a New Tool
 

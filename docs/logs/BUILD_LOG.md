@@ -237,3 +237,109 @@
 - `docs/OPENCLAW_INTEGRATION.md`: Rewritten with live verification matrix
 - `docs/checklists/IMPLEMENTATION_CHECKLIST.md`: Phase 11 marked complete
 - `PROJECT_STATE.md`: Updated status
+
+## 2026-05-04 — Session: Evolution Pipeline Complete
+
+### What was done
+
+**Batch Evolution Import:**
+- Created `import_evolved.py` — reads `batch-output-313.json` and inserts/upserts tools into SQLite registry
+  - Direct SQLite insert for speed (313 tools in <1s vs 30+ seconds via MCP loop)
+  - Upsert logic: same app+name → version incremented, schema updated
+  - Consent gate: `isSensitive` flag maps to `requires_approval` column
+  - Supports `--dry-run` and `--source` flags
+- Organized output: `docs/evolutions/batch-output-313.json` (renamed from root `evolved_tools.json`)
+- Uncommitted `evolve_mac_apps.py` fix: switched SDEF parsing from ElementTree (broken by `xi:include` namespaces) to regex
+- Git status: `evolve_mac_apps.py` — modified (not committed); `batch-output-313.json`, `import_evolved.py` — new (not committed)
+
+**Registry State After Import:**
+- 430 total tools across 43 apps (388 auto-discovered + 313 evolved, upserted)
+- 190 tools flagged as sensitive (🔒 consent-gated)
+- All tools active
+- Top apps: Music (31), Photos (18), Mail (17), Terminal (13), Safari (10), Calendar (8)
+
+**Live Verification Matrix (post-import):**
+
+| # | Tool | Test | Result |
+|---|------|------|--------|
+| 1 | `capture_screen_context` | Active window | ✅ Chrome, 1440×900 |
+| 2 | `list_registered_tools` | Full registry | ✅ 430 tools, 43 apps |
+| 3 | `list_registered_tools` | Semantic: "send a message" | ✅ `messages_send` (0.79), `mail_send` (0.78) |
+| 3 | `list_registered_tools` | Semantic: "create event" | ✅ `calendar_create_calendar` (0.85) |
+| 4 | `execute_intent` | Finder→activate | ✅ 2507ms |
+| 4 | `execute_intent` | Finder→open /Applications | ✅ 865ms |
+| 4 | `execute_intent` | Music→play | ✅ 4235ms |
+| 4 | `execute_intent` | Music→pause | ✅ 477ms |
+| 4 | `execute_intent` | Music→stop (sensitive) | ⏸️ PENDING (consent gate) |
+| 4 | `execute_intent` | Calendar→show | ✅ 4575ms |
+| 4 | `execute_intent` | Notes→show | ✅ 4310ms |
+| 4 | `execute_intent` | Reminders→show | ✅ 4310ms |
+| 4 | `execute_intent` | QuickTime Player→play | ✅ 9847ms |
+| 4 | `execute_intent` | System Settings→reveal | ✅ 864ms |
+| 4 | `execute_intent` | VLC→open | ✅ 3558ms |
+| 5 | `fetch_scripting_dictionary` | Calendar SDEF | ✅ 8 commands, 7 classes |
+
+**Failed executions (8 of 20 tested) — Repairman candidates:**
+
+| Tool | App | Error pattern |
+|------|-----|--------------|
+| do_script | Terminal | App not running |
+| open | TextEdit | App not running |
+| open | Photos | App not running |
+| play | Spotify | App not running |
+| play | VLC | App not running |
+| search_the_web | Safari | App not running |
+| open | Google Chrome | App not running |
+| open | Preview | App not running |
+
+**Failure pattern:** All failures are "App not running" — the AppleScript execution requires the target app to be open. This is expected behavior. The Repairman loop should handle this by either:
+1. Opening the app first (via `NSWorkspace`), or
+2. Adding preconditions to tool schemas, or
+3. Falling back to Accessibility UI automation
+
+### Docs Updated
+- `DEVELOPER_GUIDE.md` — added full Evolution Workflow section (5 steps)
+- `PROJECT_STATE.md` — updated status, registry numbers, quick links
+- `docs/logs/BUILD_LOG.md` — this entry
+
+### Files Created/Modified
+- NEW: `docs/evolutions/import_evolved.py` — registry import script
+- MOVED: `docs/evolutions/batch-output-313.json` — from root `evolved_tools.json`
+- UPDATED: `docs/DEVELOPER_GUIDE.md` — added evolution workflow
+- UPDATED: `PROJECT_STATE.md` — post-import state
+- UPDATED: `docs/logs/BUILD_LOG.md` — this session log
+
+## 2026-05-04 — Session: SDEF-Aware Execution Engine + Auto-Launch
+
+### Engine Overhaul
+
+**SDEF-Aware Execution (Tier 2):**
+- Added `findSdefCommand()` — fuzzy-matches tool names against app SDEF commands
+  - Strategies: exact (1.0) → space-normalized (0.95) → prefix (0.7) → substring (0.35-0.5)
+- `close` → `quit` heuristic for app-level close
+- Confidence threshold: ≥ 0.9 (only exact + space-normalized)
+- SDEF extraction via `/usr/bin/sdef` subprocess (avoids Swift 6 Sendable)
+- SDEF command cache per app
+
+**Auto-Launch:**
+- `open -a <app>` before every AppleScript execution (idempotent)
+- 2s wait for app initialization
+- Fixes "Application isn't running. (-600)" errors
+
+**Strategy Reorder:** AppleScript → AppIntent → Accessibility
+- AppIntents require apps to donate to Shortcuts (sparse coverage)
+- AppleScript via SDEF has 20+ years of macOS support
+
+**Name Normalization:** Underscores → spaces, close → quit (non-window apps)
+
+### Test Results
+**Newly working:** Music (next_track, previous_track, fast_forward, back_track, rewind, resume), Calendar (reload_calendars), QuickTime (pause, start, step_forward), VLC (mute, next, fullscreen)
+**Still failing (needs Repairman):** Safari (5), Finder (3), Calendar (view/geturl/switch), TextEdit, Photos, Spotify, Chrome
+**ExecutionEngineTests:** 8/8 ✅ | **Full suite:** 80/80 ✅
+**Overall:** 22 working, 5 consent-gated, 21 failed, 265 untested = 48/313 tested (15%)
+
+### Files Modified
+- `ExecutionEngine.swift`: SDEF matching, auto-launch, strategy reorder, normalizeCommandName
+- `docs/evolutions/TEST_MATRIX.md`: Updated (48/313 tested)
+- `docs/evolutions/APPLESCRIPT_KB.md`: Test history + engine improvements
+- `docs/logs/BUILD_LOG.md`: This entry

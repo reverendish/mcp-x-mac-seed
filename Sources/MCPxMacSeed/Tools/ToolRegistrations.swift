@@ -321,7 +321,16 @@ func registerAllTools(
         }
         
         // Execute via triple-threat engine
-        let result = await engine.execute(app: app, intentName: intentName, parameters: parameters, mode: mode)
+        // Check if the tool has a stored AppleScript from Repairman correction
+        var prebuiltScript: String? = nil
+        if let tool = matchingTool,
+           let schemaData = tool.schemaJSON.data(using: .utf8),
+           let schemaDict = try? JSONSerialization.jsonObject(with: schemaData) as? [String: Any],
+           let storedScript = schemaDict["appleScript"] as? String {
+            prebuiltScript = storedScript
+        }
+        
+        let result = await engine.execute(app: app, intentName: intentName, parameters: parameters, mode: mode, prebuiltScript: prebuiltScript)
         
         let encoder = JSONEncoder()
         let resultJSON = (try? encoder.encode(result)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
