@@ -375,3 +375,25 @@ Root cause: three concurrent-access bugs when tests run in parallel:
 - `Sources/MCPxMacSeed/AppIntents/ExecutionEngine.swift`: Security check ordering; reverted to sync `extractSdefCommands` with path-only resolution; removed `warmSdefCache`
 - `Sources/MCPxMacSeed/AppIntents/SDEFExtractor.swift`: Replaced NSWorkspace with `mdfind` + path lookup; replaced delegate XMLParser with XMLDocument; refactored to `withCheckedContinuation` for subprocess; refactored `runSpotlight` to continuation-based
 - `PROJECT_STATE.md`: Updated test count to 80/80
+
+## 2026-05-09 — Deep Integration Testing
+
+### Surface Test Results
+129 SDEF commands tested across 14 apps via `test_tools.py`. 8/8 built-in MCP tools pass. 5 Photos slideshow timeouts.
+
+### Known Gaps
+- Tests verify AppleScript *executes* (server responds ok), not that it *does the right thing*
+- Mail `send` "passes" with no params — no email actually sent
+- Music `play` returns ok but doesn't verify playback state
+- Preview `open` needs a real file path
+- Need actual parameterised integration tests
+
+### Deep test needed
+- Mail: send real email to verify compose+send pipeline
+- Music: play specific track to verify playback control
+- Preview/Finder: open real file to verify file handling
+- VLC/Spotify: test media playback when installed
+
+### Files
+- `test_tools.py`: surface-level SDEF command tester (129 tests)
+- `PROJECT_STATE.md`: updated test status

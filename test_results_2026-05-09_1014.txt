@@ -1,0 +1,4 @@
+=== MCP-x-Mac-Seed Tool Test Run ===
+Started: 2026-05-09 10:14:31.447342
+
+MCP handshake...

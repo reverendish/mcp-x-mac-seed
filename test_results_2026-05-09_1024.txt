@@ -1,0 +1,120 @@
+MCP-x-Mac-Seed — Full Tool Test
+Started: 2026-05-09 10:24:23.592422
+
+Server connected
+
+─── 1. Built-in MCP Tools ───
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSchemas metadata.
+  ✅ list_registered_tools — 71 tool(s) registered:
+- auto_test_ping [AutoTest] v4 ✅
+- automator [Automator] v1 ✅ 🔒
+- batteries_view_possible_devices_intent [Batteries] v1 ✅
+- blu
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The agent MUST reference the exact command signatures fro
+  ✅ get_ui_tree — UI tree for 'Finder': 2310 total elements (depth limited to 10).
+Detected: 25 button(s), 220 text field(s).
+
+Use this tree to construct precise Access
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:24:33Z:
+Active app: Terminal (com.apple.Terminal)
+Active window: ishsitotombe — openclaw ◂ openclaw TMPDIR=/v
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 92906336-A115-4EC7-8288-ADDB1AFE6F5D
+Proposed action: [:]
+
+Call request_human_approval again wi
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 5).
+MCP-x-Mac-Seed — Full Tool Test
+Started: 2026-05-09 10:24:57.041541
+
+Server connected
+
+─── 1. Built-in MCP Tools ───
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSchemas metadata.
+  ✅ list_registered_tools — 71 tool(s) registered:
+- auto_test_ping [AutoTest] v5 ✅
+- automator [Automator] v1 ✅ 🔒
+- batteries_view_possible_devices_intent [Batteries] v1 ✅
+- blu
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The agent MUST reference the exact command signatures fro
+  ✅ get_ui_tree — UI tree for 'Finder': 2310 total elements (depth limited to 10).
+Detected: 25 button(s), 220 text field(s).
+
+Use this tree to construct precise Access
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:25:05Z:
+Active app: Google Chrome (com.google.Chrome)
+Active window: OpenClaw Control
+  Owner: Google Chrome
+
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 792C05A1-D208-4FB2-B7B0-9A7AC7659451
+Proposed action: [:]
+
+Call request_human_approval again wi
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 6).
+  ✅ execute_intent — ✅ Executed 'activate' on 'Finder' via appleScript (2824ms).
+Output: Command executed successfully.
+
+─── 2. App SDEF Commands ───
+
+  Finder (25 commands):
+    ✅ open — ❌ Failed to execute 'open' on 'Finder' via none.
+Error: All execution strategies exhausted for 'open' on 'Finder'. AppleScript: app not scriptable or 
+    ✅ print — ❌ Failed to execute 'print' on 'Finder' via none.
+Error: All execution strategies exhausted for 'print' on 'Finder'. AppleScript: app not scriptable o
+    ✅ quit — ✅ Executed 'quit' on 'Finder' via appleScript (2507ms).
+Output: Command executed successfully.
+    ✅ activate — ❌ Failed to execute 'activate' on 'Finder' via none.
+Error: All execution strategies exhausted for 'activate' on 'Finder'. AppleScript: app not script
+    ✅ close — ✅ Executed 'close' on 'Finder' via appleScript (2396ms).
+Output: Command executed successfully.
+    ✅ count — ✅ Executed 'count' on 'Finder' via appleScript (2362ms).
+Output: 23
+    ✅ data size — ❌ Failed to execute 'data size' on 'Finder' via none.
+Error: All execution strategies exhausted for 'data size' on 'Finder'. AppleScript: app not scri
+    ✅ delete — ❌ Failed to execute 'delete' on 'Finder' via none.
+Error: All execution strategies exhausted for 'delete' on 'Finder'. AppleScript: app not scriptable
+    ✅ duplicate — ❌ Failed to execute 'duplicate' on 'Finder' via none.
+Error: All execution strategies exhausted for 'duplicate' on 'Finder'. AppleScript: app not scri
+    ✅ exists — ❌ Failed to execute 'exists' on 'Finder' via none.
+Error: All execution strategies exhausted for 'exists' on 'Finder'. AppleScript: app not scriptable
+    ✅ make — ❌ Failed to execute 'make' on 'Finder' via none.
+Error: All execution strategies exhausted for 'make' on 'Finder'. AppleScript: app not scriptable or 
+    ✅ move — ❌ Failed to execute 'move' on 'Finder' via none.
+Error: All execution strategies exhausted for 'move' on 'Finder'. AppleScript: app not scriptable or 
+    ✅ select — ❌ Failed to execute 'select' on 'Finder' via none.
+Error: All execution strategies exhausted for 'select' on 'Finder'. AppleScript: app not scriptable
+    ✅ openVirtualLocation — ❌ Failed to execute 'openVirtualLocation' on 'Finder' via none.
+Error: All execution strategies exhausted for 'openVirtualLocation' on 'Finder'. Apple
+    ✅ copy — ❌ Failed to execute 'copy' on 'Finder' via none.
+Error: All execution strategies exhausted for 'copy' on 'Finder'. AppleScript: app not scriptable or 
+    ✅ sort — ❌ Failed to execute 'sort' on 'Finder' via none.
+Error: All execution strategies exhausted for 'sort' on 'Finder'. AppleScript: app not scriptable or 
+    ✅ clean up — ❌ Failed to execute 'clean up' on 'Finder' via none.
+Error: All execution strategies exhausted for 'clean up' on 'Finder'. AppleScript: app not script
+    ✅ eject — ❌ Failed to execute 'eject' on 'Finder' via none.
+Error: All execution strategies exhausted for 'eject' on 'Finder'. AppleScript: app not scriptable o
+    ✅ empty — ✅ Executed 'empty' on 'Finder' via appleScript (3994ms).
+Output: Command executed successfully.
+    ✅ erase — ❌ Failed to execute 'erase' on 'Finder' via none.
+Error: All execution strategies exhausted for 'erase' on 'Finder'. AppleScript: app not scriptable o
+    ✅ reveal — ❌ Failed to execute 'reveal' on 'Finder' via none.
+Error: All execution strategies exhausted for 'reveal' on 'Finder'. AppleScript: app not scriptable
+    ✅ update — ❌ Failed to execute 'update' on 'Finder' via none.
+Error: All execution strategies exhausted for 'update' on 'Finder'. AppleScript: app not scriptable
+    ✅ restart — ✅ Executed 'restart' on 'Finder' via appleScript (2291ms).
+Output: Command executed successfully.
+    ✅ shut down — ✅ Executed 'shut down' on 'Finder' via appleScript (3119ms).
+Output: Command executed successfully.
+    ✅ sleep — ✅ Executed 'sleep' on 'Finder' via appleScript (7278ms).
+Output: Command executed successfully.
+
+  System Events (31 commands):

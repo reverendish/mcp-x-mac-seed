@@ -1,0 +1,64 @@
+MCP-x-Mac-Seed — Full Tool Test
+Started: 2026-05-09 10:23:17.334089
+
+Server connected
+
+─── 1. Built-in MCP Tools ───
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSchemas metadata.
+  ✅ list_registered_tools — 71 tool(s) registered:
+- auto_test_ping [AutoTest] v3 ✅
+- automator [Automator] v1 ✅ 🔒
+- batteries_view_possible_devices_intent [Batteries] v1 ✅
+- blu
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The agent MUST reference the exact command signatures fro
+  ✅ get_ui_tree — UI tree for 'Finder': 2310 total elements (depth limited to 10).
+Detected: 25 button(s), 220 text field(s).
+
+Use this tree to construct precise Access
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:23:38Z:
+Active app: Google Chrome (com.google.Chrome)
+Active window: API keys | Google AI Studio
+  Owner: Goo
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 1F011AAB-9178-4C93-8B19-938F6D3B6894
+Proposed action: [:]
+
+Call request_human_approval again wi
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 4).
+  ✅ execute_intent — ✅ Executed 'activate' on 'Finder' via appleScript (2925ms).
+Output: Command executed successfully.
+
+─── 2. App SDEF Commands ───
+
+  ⏭️  Finder — no SDEF commands
+  ⏭️  System Events — no SDEF commands
+  ⏭️  Mail — no SDEF commands
+  ⏭️  Music — no SDEF commands
+  ⏭️  Safari — no SDEF commands
+  ⏭️  Calendar — no SDEF commands
+  ⏭️  Reminders — no SDEF commands
+  ⏭️  Notes — no SDEF commands
+  ⏭️  Terminal — no SDEF commands
+  ⏭️  TextEdit — no SDEF commands
+  ⏭️  Preview — no SDEF commands
+  ⏭️  Photos — no SDEF commands
+  ⏭️  QuickTime Player — no SDEF commands
+  ⏭️  VLC — no SDEF commands
+  ⏭️  Spotify — no SDEF commands
+  ⏭️  Google Chrome — no SDEF commands
+  ⏭️  Messages — no SDEF commands
+  ⏭️  Script Editor — no SDEF commands
+  ⏭️  System Settings — no SDEF commands
+  ⏭️  Xcode — no SDEF commands
+═══════════════════
+ TOTAL:  8
+ PASS:   8
+ FAIL:   0
+═══════════════════
+
+Finished: 2026-05-09 10:23:48.307459
+Results:  test_results_2026-05-09_1023.txt

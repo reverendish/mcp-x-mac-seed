@@ -1,0 +1,41 @@
+=== MCP-x-Mac-Seed Tool Test Run ===
+Started: 2026-05-09 10:17:55.312012
+
+Connected
+
+Found 8 tools
+
+─── Built-in MCP Tools ──
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSchemas metadata.
+  ✅ list_registered_tools — 70 tool(s) registered:
+- automator [Automator] v1 ✅ 🔒
+- batteries_view_possible_devices_intent [Batteries] v1 ✅
+- blueto
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The agent MUST reference th
+  ✅ get_ui_tree — UI tree for 'Finder': 2310 total elements (depth limited to 10).
+Detected: 25 button(s), 220 text field(s).
+
+Use this tr
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:18:11Z:
+Active app: Google Chrome (com.google.Chrome)
+Active window: OpenClaw C
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 42D8651B-0E28-4AC9-B3C1-48F4196579A2
+Proposed action: [:]
+
+Call r
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 1).
+  ✅ execute_intent — ✅ Executed 'activate' on 'Finder' via appleScript (2849ms).
+Output: Command executed successfully.
+
+═══════════════════
+ TOTAL:  8
+ PASS:   8
+ FAIL:   0
+═══════════════════
+
+Finished: 2026-05-09 10:18:14.955494

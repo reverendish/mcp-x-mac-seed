@@ -597,7 +597,10 @@ actor ExecutionEngine {
             case "select":
                 let target = params["path"] ?? params["direct"] ?? ""
                 return "tell application \"Finder\"\n    activate\n    select POSIX file \"\(target)\"\nend tell"
-            case "new_folder", "create_folder":
+            case "count":
+                let target = params["direct"] ?? params["target"] ?? "every item of desktop"
+                return "tell application \"Finder\" to return count of \(target)"
+            case "new_folder", "create_folder", "make":
                 let name = params["name"] ?? "New Folder"
                 let location = params["at"] ?? params["location"] ?? "desktop"
                 return "tell application \"Finder\" to make new folder at \(location) with properties {name:\"\(name)\"}"
@@ -675,6 +678,45 @@ actor ExecutionEngine {
                 return """
                 tell application "System Events" to keystroke "\(text)"
                 """
+            default:
+                break
+            }
+        }
+        
+        // Calendar
+        if app == "Calendar" {
+            switch lowered {
+            case "create calendar", "make":
+                let name = params["name"] ?? "New Calendar"
+                return "tell application \"Calendar\" to make new calendar with properties {name:\"\(name)\"}"
+            case "show", "activate":
+                return "tell application \"Calendar\" to activate"
+            case "reload calendars":
+                return "tell application \"Calendar\" to reload calendars"
+            case "switch view":
+                let view = params["view"] ?? params["direct"] ?? "month"
+                return "tell application \"Calendar\" to switch view to \(view) view"
+            default:
+                break
+            }
+        }
+        
+        // Safari
+        if app == "Safari" {
+            switch lowered {
+            case "activate", "show":
+                return "tell application \"Safari\" to activate"
+            case "search the web", "search", "open location":
+                let query = params["direct"] ?? params["query"] ?? ""
+                let escaped = query.replacingOccurrences(of: "\\", with: "\\\\")
+                    .replacingOccurrences(of: "\"", with: "\\\"")
+                if escaped.hasPrefix("http") {
+                    return "tell application \"Safari\" to open location \"\(escaped)\""
+                }
+                return "tell application \"Safari\" to search the web for \"\(escaped)\""
+            case "do javascript", "execute javascript":
+                let script = params["direct"] ?? params["script"] ?? ""
+                return "tell application \"Safari\" to do JavaScript \"\(script)\" in document 1"
             default:
                 break
             }

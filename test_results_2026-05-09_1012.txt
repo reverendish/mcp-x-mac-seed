@@ -1,0 +1,6 @@
+=== MCP-x-Mac-Seed Tool Test Run ===
+Started: Sat  9 May 2026 10:12:10 BST
+
+Fetching tool list...
+Found ? tools
+

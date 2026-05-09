@@ -1,0 +1,65 @@
+MCP-x-Mac-Seed — Full Tool Test
+Started: 2026-05-09 10:20:52.957152
+
+Server connected
+
+─── 1. Built-in MCP Tools ───
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSchemas metadata.
+  ✅ list_registered_tools — 71 tool(s) registered:
+- auto_test_ping [AutoTest] v2 ✅
+- automator [Automator] v1 ✅ 🔒
+- batteries_view_possible_devices_intent [Batteries] v1 ✅
+- blu
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The agent MUST reference the exact command signatures fro
+  ✅ get_ui_tree — UI tree for 'Finder': 2310 total elements (depth limited to 10).
+Detected: 25 button(s), 220 text field(s).
+
+Use this tree to construct precise Access
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:21:07Z:
+Active app: Terminal (com.apple.Terminal)
+Active window: Untitled
+  Owner: Terminal
+  Bounds: 285, 88
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 49C79D36-8ADC-4371-B618-57CE605FF4D5
+Proposed action: [:]
+
+Call request_human_approval again wi
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 3).
+  ✅ execute_intent — ✅ Executed 'activate' on 'Finder' via appleScript (2744ms).
+Output: Command executed successfully.
+
+─── 2. App SDEF Commands ───
+
+  ⏭️  Finder — no SDEF (skipping)
+  ⏭️  System Events — no SDEF (skipping)
+  ⏭️  Mail — no SDEF (skipping)
+  ⏭️  Music — no SDEF (skipping)
+  ⏭️  Safari — no SDEF (skipping)
+  ⏭️  Calendar — no SDEF (skipping)
+  ⏭️  Reminders — no SDEF (skipping)
+  ⏭️  Notes — no SDEF (skipping)
+  ⏭️  Terminal — no SDEF (skipping)
+  ⏭️  TextEdit — no SDEF (skipping)
+  ⏭️  Preview — no SDEF (skipping)
+  ⏭️  Photos — no SDEF (skipping)
+  ⏭️  QuickTime Player — no SDEF (skipping)
+  ⏭️  VLC — no SDEF (skipping)
+  ⏭️  Spotify — no SDEF (skipping)
+  ⏭️  Google Chrome — no SDEF (skipping)
+  ⏭️  Messages — no SDEF (skipping)
+  ⏭️  Script Editor — no SDEF (skipping)
+  ⏭️  System Settings — no SDEF (skipping)
+  ⏭️  Xcode — no SDEF (skipping)
+═══════════════════
+ TOTAL:  8
+ PASS:   8
+ FAIL:   0
+═══════════════════
+
+Finished: 2026-05-09 10:21:20.046067
+Results:  test_results_2026-05-09_1020.txt

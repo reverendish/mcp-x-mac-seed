@@ -1,0 +1,75 @@
+MCP-x-Mac-Seed — Deep Integration Test
+Started: 2026-05-09 11:52:18.068133
+
+─── Mail: Send Real Email ───
+
+  ✅ Mail: send email to self — ✅ Executed 'send' on 'Mail' via appleScript (4104ms).
+Output: sent
+  ✅ Mail: check for new mail — ✅ Executed 'check for new mail' on 'Mail' via appleScript (10971ms).
+Output: Command executed successfully.
+  ✅ Mail: synchronize — ✅ Executed 'synchronize' on 'Mail' via appleScript (2270ms).
+Output: Command executed successfully.
+
+─── Music: Playback Control ───
+
+  ✅ Music: play — ✅ Executed 'play' on 'Music' via appleScript (7265ms).
+Output: Command executed successfully.
+  ✅ Music: pause — ✅ Executed 'pause' on 'Music' via appleScript (2339ms).
+Output: Command executed successfully.
+  ❌ Music: play (resume) — ❌ Failed to execute 'play' on 'Music' via none.
+Error: All execution strategies exhausted for 'play' on 'Music'. AppleSc
+  ❌ Music: next track — ❌ Failed to execute 'next track' on 'Music' via none.
+Error: All execution strategies exhausted for 'next track' on 'Mus
+  ✅ Music: back track — ✅ Executed 'back track' on 'Music' via appleScript (7477ms).
+Output: Command executed successfully.
+  ✅ Music: stop — ✅ Executed 'stop' on 'Music' via appleScript (2431ms).
+Output: Command executed successfully.
+
+─── Finder: File Operations ───
+
+  ✅ Finder: count desktop items — ✅ Executed 'count' on 'Finder' via appleScript (2363ms).
+Output: 23
+  ✅ Finder: count home items — ✅ Executed 'count' on 'Finder' via appleScript (2370ms).
+Output: 25
+  ✅ Finder: open README.md — ✅ Executed 'open' on 'Finder' via appleScript (7264ms).
+Output: Command executed successfully.
+  ❌ Finder: create test folder — ❌ Failed to execute 'make' on 'Finder' via none.
+Error: All execution strategies exhausted for 'make' on 'Finder'. Apple
+
+─── Preview: Open Real File ───
+
+  ❌ Preview: open README.md — ❌ Failed to execute 'open' on 'Preview' via none.
+Error: All execution strategies exhausted for 'open' on 'Preview'. App
+  ✅ Preview: print — ✅ Executed 'print' on 'Preview' via appleScript (2372ms).
+Output: Command executed successfully.
+
+─── Calendar ───
+
+  ❌ Calendar: create calendar — ❌ Failed to execute 'create calendar' on 'Calendar' via none.
+Error: All execution strategies exhausted for 'create cale
+  ✅ Calendar: show — ✅ Executed 'show' on 'Calendar' via appleScript (7298ms).
+Output: Command executed successfully.
+
+─── Reminders ───
+
+  ❌ Reminders: create reminder — ❌ Failed to execute 'make' on 'Reminders' via none.
+Error: All execution strategies exhausted for 'make' on 'Reminders'.
+  ✅ Reminders: show app — ✅ Executed 'show' on 'Reminders' via appleScript (2354ms).
+Output: Command executed successfully.
+
+─── Safari ───
+
+  ✅ Safari: search the web — ✅ Executed 'search the web' on 'Safari' via appleScript (2490ms).
+Output: Command executed successfully.
+  ❌ Safari: do JavaScript — ❌ Failed to execute 'do JavaScript' on 'Safari' via none.
+Error: All execution strategies exhausted for 'do JavaScript' 
+
+═════════════════════════════
+ DEEP TEST RESULTS
+ PASS:  14
+ FAIL:  7
+ TOTAL: 21
+═════════════════════════════
+
+Finished: 2026-05-09 11:54:54.391790
+Results:  deep_test_2026-05-09_1152.txt
