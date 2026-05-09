@@ -1,0 +1,281 @@
+MCP-x-Mac-Seed — Full Tool Test
+Started: 2026-05-09 10:52:22.435570
+Timeout: 20s per command
+
+✅ Server connected
+
+─── 1. Built-in MCP Tools ───
+
+  ✅ scan_for_intents — No AppIntents discovered for 'Finder'. The app may not expose intents via Info.plist or AssistantSch
+  ✅ list_registered_tools — 71 tool(s) registered:
+- auto_test_ping [AutoTest] v8 ✅
+- automator [Automator] v1 ✅ 🔒
+- batteries_v
+  ✅ fetch_scripting_dictionary — Scripting dictionary for 'Finder': 25 commands, 32 classes across 9 suite(s).
+
+⚠️ IMPORTANT: The age
+  ✅ get_ui_tree — UI tree for 'Finder': 2315 total elements (depth limited to 10).
+Detected: 24 button(s), 220 text fi
+  ✅ capture_screen_context — Screen context captured at 2026-05-09T09:52:37Z:
+Active app: Google Chrome (com.google.Chrome)
+Activ
+  ✅ request_human_approval — ⏸️ Tool 'finder' REQUIRES HUMAN APPROVAL.
+
+Request ID: 4A133DB4-628A-4537-9D62-1F614D9526B9
+Proposed
+  ✅ register_tool — Tool 'auto_test_ping' registered successfully (id: 71, version: 9).
+  ✅ execute_intent — ✅ Executed 'activate' on 'Finder' via appleScript (2363ms).
+Output: Command executed successfully.
+
+─── 2. App SDEF Commands ───
+
+    ✅ open — ❌ Failed to execute 'open' on 'Finder' via none.
+Error: All execution strategies exhausted for 'open
+    ✅ print — ❌ Failed to execute 'print' on 'Finder' via none.
+Error: All execution strategies exhausted for 'pri
+    ✅ quit — ❌ Failed to execute 'quit' on 'Finder' via none.
+Error: All execution strategies exhausted for 'quit
+    ✅ activate — ✅ Executed 'activate' on 'Finder' via appleScript (2320ms).
+Output: Command executed successfully.
+    ✅ close — ✅ Executed 'close' on 'Finder' via appleScript (2322ms).
+Output: Command executed successfully.
+    ✅ count — ✅ Executed 'count' on 'Finder' via appleScript (7225ms).
+Output: 23
+    ✅ data size — ✅ Executed 'data size' on 'Finder' via appleScript (2272ms).
+Output: 0
+    ✅ delete — ❌ Failed to execute 'delete' on 'Finder' via none.
+Error: All execution strategies exhausted for 'de
+    ✅ duplicate — ❌ Failed to execute 'duplicate' on 'Finder' via none.
+Error: All execution strategies exhausted for 
+    ✅ exists — ✅ Executed 'exists' on 'Finder' via appleScript (2227ms).
+Output: false
+    ✅ make — ❌ Failed to execute 'make' on 'Finder' via none.
+Error: All execution strategies exhausted for 'make
+    ✅ move — ❌ Failed to execute 'move' on 'Finder' via none.
+Error: All execution strategies exhausted for 'move
+    ✅ select — ❌ Failed to execute 'select' on 'Finder' via none.
+Error: All execution strategies exhausted for 'se
+    ✅ openVirtualLocation — ❌ Failed to execute 'openVirtualLocation' on 'Finder' via none.
+Error: All execution strategies exha
+    ✅ copy — ❌ Failed to execute 'copy' on 'Finder' via none.
+Error: All execution strategies exhausted for 'copy
+    ✅ sort — ❌ Failed to execute 'sort' on 'Finder' via none.
+Error: All execution strategies exhausted for 'sort
+    ✅ clean up — ❌ Failed to execute 'clean up' on 'Finder' via none.
+Error: All execution strategies exhausted for '
+    ✅ eject — ❌ Failed to execute 'eject' on 'Finder' via none.
+Error: All execution strategies exhausted for 'eje
+    ✅ empty — ❌ Failed to execute 'empty' on 'Finder' via none.
+Error: All execution strategies exhausted for 'emp
+    ✅ erase — ❌ Failed to execute 'erase' on 'Finder' via none.
+Error: All execution strategies exhausted for 'era
+    ✅ reveal — ❌ Failed to execute 'reveal' on 'Finder' via none.
+Error: All execution strategies exhausted for 're
+    ✅ update — ❌ Failed to execute 'update' on 'Finder' via none.
+Error: All execution strategies exhausted for 'up
+    ⏭️  restart (system-level, skipped)
+    ⏭️  shut down (system-level, skipped)
+    ⏭️  sleep (system-level, skipped)
+  → Finder: 22 pass, 0 fail, 3 skipped
+
+    ✅ delete — ❌ Failed to execute 'delete' on 'Mail' via none.
+Error: All execution strategies exhausted for 'dele
+    ✅ duplicate — ❌ Failed to execute 'duplicate' on 'Mail' via none.
+Error: All execution strategies exhausted for 'd
+    ✅ move — ❌ Failed to execute 'move' on 'Mail' via none.
+Error: All execution strategies exhausted for 'move' 
+    ✅ bounce — ✅ Executed 'bounce' on 'Mail' via appleScript (2352ms).
+Output: Command executed successfully.
+    ✅ check for new mail — ✅ Executed 'check for new mail' on 'Mail' via appleScript (2236ms).
+Output: Command executed success
+    ✅ extract name from — ❌ Failed to execute 'extract name from' on 'Mail' via none.
+Error: All execution strategies exhauste
+    ✅ extract address from — ❌ Failed to execute 'extract address from' on 'Mail' via none.
+Error: All execution strategies exhau
+    ✅ forward — ❌ Failed to execute 'forward' on 'Mail' via none.
+Error: All execution strategies exhausted for 'for
+    ✅ GetURL — ❌ Failed to execute 'GetURL' on 'Mail' via none.
+Error: All execution strategies exhausted for 'GetU
+    ✅ import Mail mailbox — ❌ Failed to execute 'import Mail mailbox' on 'Mail' via none.
+Error: All execution strategies exhaus
+    ✅ mailto — ❌ Failed to execute 'mailto' on 'Mail' via none.
+Error: All execution strategies exhausted for 'mail
+    ✅ perform mail action with messages — ✅ Executed 'perform mail action with messages' on 'Mail' via appleScript (2247ms).
+Output: Command e
+    ✅ redirect — ✅ Executed 'redirect' on 'Mail' via appleScript (2289ms).
+Output: missing value
+    ✅ reply — ❌ Failed to execute 'reply' on 'Mail' via none.
+Error: All execution strategies exhausted for 'reply
+    ✅ send — ❌ Failed to execute 'send' on 'Mail' via none.
+Error: All execution strategies exhausted for 'send' 
+    ✅ synchronize — ✅ Executed 'synchronize' on 'Mail' via appleScript (2476ms).
+Output: Command executed successfully.
+  → Mail: 16 pass, 0 fail, 0 skipped
+
+    ✅ print — ❌ Failed to execute 'print' on 'Music' via none.
+Error: All execution strategies exhausted for 'prin
+    ✅ close — ✅ Executed 'close' on 'Music' via appleScript (2313ms).
+Output: Command executed successfully.
+    ✅ count — ❌ Failed to execute 'count' on 'Music' via none.
+Error: All execution strategies exhausted for 'coun
+    ✅ delete — ❌ Failed to execute 'delete' on 'Music' via none.
+Error: All execution strategies exhausted for 'del
+    ✅ duplicate — ❌ Failed to execute 'duplicate' on 'Music' via none.
+Error: All execution strategies exhausted for '
+    ✅ exists — ❌ Failed to execute 'exists' on 'Music' via none.
+Error: All execution strategies exhausted for 'exi
+    ✅ make — ❌ Failed to execute 'make' on 'Music' via none.
+Error: All execution strategies exhausted for 'make'
+    ✅ move — ❌ Failed to execute 'move' on 'Music' via none.
+Error: All execution strategies exhausted for 'move'
+    ✅ open — ❌ Failed to execute 'open' on 'Music' via none.
+Error: All execution strategies exhausted for 'open'
+    ✅ run — ✅ Executed 'run' on 'Music' via appleScript (2260ms).
+Output: Command executed successfully.
+    ✅ quit — ❌ Failed to execute 'quit' on 'Music' via none.
+Error: All execution strategies exhausted for 'quit'
+    ✅ save — ❌ Failed to execute 'save' on 'Music' via none.
+Error: All execution strategies exhausted for 'save'
+    ✅ add — ❌ Failed to execute 'add' on 'Music' via none.
+Error: All execution strategies exhausted for 'add' o
+    ✅ back track — ✅ Executed 'back track' on 'Music' via appleScript (2286ms).
+Output: Command executed successfully.
+    ✅ convert — ✅ Executed 'convert' on 'Music' via appleScript (2250ms).
+Output: Command executed successfully.
+    ✅ download — ❌ Failed to execute 'download' on 'Music' via none.
+Error: All execution strategies exhausted for 'd
+    ✅ export — ❌ Failed to execute 'export' on 'Music' via none.
+Error: All execution strategies exhausted for 'exp
+    ✅ fast forward — ✅ Executed 'fast forward' on 'Music' via appleScript (2289ms).
+Output: Command executed successfully
+    ✅ next track — ✅ Executed 'next track' on 'Music' via appleScript (2313ms).
+Output: Command executed successfully.
+    ✅ pause — ❌ Failed to execute 'pause' on 'Music' via none.
+Error: All execution strategies exhausted for 'paus
+    ✅ play — ❌ Failed to execute 'play' on 'Music' via none.
+Error: All execution strategies exhausted for 'play'
+    ✅ playpause — ✅ Executed 'playpause' on 'Music' via appleScript (2262ms).
+Output: Command executed successfully.
+    ✅ previous track — ✅ Executed 'previous track' on 'Music' via appleScript (2257ms).
+Output: Command executed successful
+    ✅ refresh — ❌ Failed to execute 'refresh' on 'Music' via none.
+Error: All execution strategies exhausted for 're
+    ✅ resume — ✅ Executed 'resume' on 'Music' via appleScript (7220ms).
+Output: Command executed successfully.
+    ✅ reveal — ❌ Failed to execute 'reveal' on 'Music' via none.
+Error: All execution strategies exhausted for 'rev
+    ✅ rewind — ✅ Executed 'rewind' on 'Music' via appleScript (2207ms).
+Output: Command executed successfully.
+    ✅ search — ❌ Failed to execute 'search' on 'Music' via none.
+Error: All execution strategies exhausted for 'sea
+    ✅ select — ❌ Failed to execute 'select' on 'Music' via none.
+Error: All execution strategies exhausted for 'sel
+    ✅ stop — ✅ Executed 'stop' on 'Music' via appleScript (2270ms).
+Output: Command executed successfully.
+    ✅ open location — ✅ Executed 'open location' on 'Music' via appleScript (2248ms).
+Output: Command executed successfull
+  → Music: 31 pass, 0 fail, 0 skipped
+
+    ✅ add reading list item — ✅ Executed 'add reading list item' on 'Safari' via appleScript (14506ms).
+Output: Command executed s
+    ✅ do JavaScript — ✅ Executed 'do JavaScript' on 'Safari' via appleScript (7236ms).
+Output: missing value
+    ✅ email contents — ✅ Executed 'email contents' on 'Safari' via appleScript (2223ms).
+Output: Command executed successfu
+    ✅ search the web — ❌ Failed to execute 'search the web' on 'Safari' via none.
+Error: All execution strategies exhausted
+    ✅ show bookmarks — ❌ Failed to execute 'show bookmarks' on 'Safari' via none.
+Error: All execution strategies exhausted
+    ✅ show extensions preferences — ✅ Executed 'show extensions preferences' on 'Safari' via appleScript (7296ms).
+Output: Command execu
+    ✅ dispatch message to extension — ❌ Failed to execute 'dispatch message to extension' on 'Safari' via none.
+Error: All execution strat
+    ✅ sync all plist to disk — ✅ Executed 'sync all plist to disk' on 'Safari' via appleScript (2397ms).
+Output: Command executed s
+    ✅ show privacy report — ✅ Executed 'show privacy report' on 'Safari' via appleScript (7272ms).
+Output: Command executed succ
+    ✅ show credit card settings — ✅ Executed 'show credit card settings' on 'Safari' via appleScript (2299ms).
+Output: Command execute
+  → Safari: 10 pass, 0 fail, 0 skipped
+
+  ⏭️  Calendar — no SDEF
+    ✅ show — ❌ Failed to execute 'show' on 'Reminders' via none.
+Error: All execution strategies exhausted for 's
+  → Reminders: 1 pass, 0 fail, 0 skipped
+
+  ⏭️  Notes — no SDEF
+  ⏭️  Terminal — no SDEF
+  ⏭️  TextEdit — no SDEF
+    ✅ close — ✅ Executed 'close' on 'Preview' via appleScript (2355ms).
+Output: Command executed successfully.
+    ✅ count — ✅ Executed 'count' on 'Preview' via appleScript (2968ms).
+Output: 0
+    ✅ delete — ❌ Failed to execute 'delete' on 'Preview' via none.
+Error: All execution strategies exhausted for 'd
+    ✅ duplicate — ❌ Failed to execute 'duplicate' on 'Preview' via none.
+Error: All execution strategies exhausted for
+    ✅ exists — ✅ Executed 'exists' on 'Preview' via appleScript (2339ms).
+Output: true
+    ✅ get — ❌ Failed to execute 'get' on 'Preview' via none.
+Error: All execution strategies exhausted for 'get'
+    ✅ make — ❌ Failed to execute 'make' on 'Preview' via none.
+Error: All execution strategies exhausted for 'mak
+    ✅ move — ❌ Failed to execute 'move' on 'Preview' via none.
+Error: All execution strategies exhausted for 'mov
+    ✅ open — ✅ Executed 'open' on 'Preview' via appleScript (2324ms).
+Output: missing value
+    ✅ print — ✅ Executed 'print' on 'Preview' via appleScript (7227ms).
+Output: Command executed successfully.
+    ✅ quit — ✅ Executed 'quit' on 'Preview' via appleScript (2269ms).
+Output: Command executed successfully.
+    ✅ save — ❌ Failed to execute 'save' on 'Preview' via none.
+Error: All execution strategies exhausted for 'sav
+    ✅ set — ❌ Failed to execute 'set' on 'Preview' via none.
+Error: All execution strategies exhausted for 'set'
+  → Preview: 13 pass, 0 fail, 0 skipped
+
+    ✅ count — ❌ Failed to execute 'count' on 'Photos' via none.
+Error: All execution strategies exhausted for 'cou
+    ✅ exists — ❌ Failed to execute 'exists' on 'Photos' via none.
+Error: All execution strategies exhausted for 'ex
+    ✅ open — ❌ Failed to execute 'open' on 'Photos' via none.
+Error: All execution strategies exhausted for 'open
+    ✅ quit — ✅ Executed 'quit' on 'Photos' via appleScript (2293ms).
+Output: Command executed successfully.
+    ✅ import — ❌ Failed to execute 'import' on 'Photos' via none.
+Error: All execution strategies exhausted for 'im
+    ✅ export — ❌ Failed to execute 'export' on 'Photos' via none.
+Error: All execution strategies exhausted for 'ex
+    ✅ duplicate — ✅ Executed 'duplicate' on 'Photos' via appleScript (7210ms).
+Output: missing value
+    ✅ make — ❌ Failed to execute 'make' on 'Photos' via none.
+Error: All execution strategies exhausted for 'make
+    ✅ delete — ❌ Failed to execute 'delete' on 'Photos' via none.
+Error: All execution strategies exhausted for 'de
+    ✅ add — ❌ Failed to execute 'add' on 'Photos' via none.
+Error: All execution strategies exhausted for 'add' 
+    ✅ start slideshow — ❌ Failed to execute 'start slideshow' on 'Photos' via none.
+Error: All execution strategies exhauste
+    ✅ stop slideshow — ✅ Executed 'stop slideshow' on 'Photos' via appleScript (7196ms).
+Output: Command executed successfu
+    ✅ next slide — ✅ Executed 'next slide' on 'Photos' via appleScript (7244ms).
+Output: Command executed successfully.
+    ❌ previous slide — timeout (20s)
+    ❌ pause slideshow — timeout (20s)
+    ❌ resume slideshow — timeout (20s)
+    ❌ spotlight — timeout (20s)
+    ❌ search — timeout (20s)
+  → Photos: 13 pass, 5 fail, 0 skipped
+
+  ⏭️  QuickTime Player — no SDEF
+  ⏭️  Script Editor — no SDEF
+  ⏭️  System Settings — no SDEF
+═══════════════════
+ TOTAL:    129
+ PASS:     114
+ FAIL:     5
+ SKIPPED:  10
+═══════════════════
+
+Finished: 2026-05-09 11:03:24.152630
+Results:  test_results_2026-05-09_1052.txt
