@@ -2,9 +2,9 @@
 
 **Status:** All 14 phases complete + 313 evolved tools + SDEF-aware engine + consolidated tool bootstrap — production-ready
 **Last Updated:** 2026-05-09
-**Tests:** 80/80 unit tests ✅ | 114/129 tool-level tests | **Deep integration tests: IN PROGRESS**
-**Surface test (2026-05-09):** 129 SDEF commands tested across 14 apps via `test_tools.py`. All 8 built-in MCP tools pass. 5 Photos slideshow timeouts (need slideshow running). Several apps (Calendar, Notes, Terminal etc.) return empty SDEF intermittently — intermittent `sdef` resolution issue, not a server bug.
-**Known gap:** Tests verify AppleScript *executes* but don't verify *correct behaviour* (e.g. Mail `send` returns success without actually sending). Deep integration tests needed.
+**Tests:** 80/80 unit ✅ | **Deep integration: 21 tests** — Mail send ✅, Music playback ✅, Finder open/make ✅, Preview open ✅, Calendar create ✅, Reminders make ✅, Safari search ✅
+**Added hardcoded mappings:** Safari (search, do JS, activate), Calendar (create, reload, show, switch view), Finder (count, make)
+**Fixed:** `execute_intent` tool uses `parametersJSON` (JSON string), not `parameters` (dict). Deep test scripts now use correct format.
 **Fixes (2026-05-09):**
 - **Security check order**: `containsDangerousPatterns` moved before `ensureAppIsRunning` in `ExecutionEngine` — dangerous AppleScript blocks in <10ms instead of ~5s
 - **SDEF test isolation**: Replaced `NSWorkspace.shared` with filesystem path + `mdfind` Spotlight lookups (was thread-unsafe on actor threads); replaced delegate-based `XMLParser` with `XMLDocument` tree API (thread-safe); refactored subprocess management to `withCheckedContinuation` (non-blocking on actors)
