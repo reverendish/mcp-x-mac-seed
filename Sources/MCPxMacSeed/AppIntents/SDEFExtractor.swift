@@ -78,7 +78,6 @@ enum SDEFError: Error, Equatable {
 /// from macOS applications using the built-in `sdef` command-line tool.
 actor SDEFExtractor {
     
-    private let workspace = NSWorkspace.shared
     private let sdefPath = "/usr/bin/sdef"
     
     // MARK: - Public API
@@ -86,9 +85,10 @@ actor SDEFExtractor {
     /// Fetches the full scripting dictionary for a given application.
     /// Accepts bundle ID ("com.apple.finder") or display name ("Finder").
     func fetchScriptingDictionary(appName: String) async throws -> ScriptingDictionary {
-        guard let appURL = resolveAppURL(appName) else {
+        guard let appURL = await resolveAppURL(appName) else {
             throw SDEFError.appNotFound
         }
+        fputs("[SDEF-DBG] resolveAppURL resolved '\(appName)'\n", stderr)
         
         let bundle = Bundle(url: appURL)
         let bundleID = bundle?.bundleIdentifier
@@ -97,9 +97,8 @@ actor SDEFExtractor {
         // Run sdef to get the XML dictionary
         let xmlString: String
         do {
-            xmlString = try runSDEF(appURL: appURL)
-        } catch SDEFError.sdefToolFailed, SDEFError.noScriptingDictionary {
-            // App has no scripting dictionary — return empty schema
+            xmlString = try await runSDEF(appURL: appURL)
+        } catch {
             return ScriptingDictionary(
                 appName: displayName,
                 appBundleID: bundleID,
@@ -115,7 +114,7 @@ actor SDEFExtractor {
     
     // MARK: - App Resolution
     
-    private func resolveAppURL(_ identifier: String) -> URL? {
+    private func resolveAppURL(_ identifier: String) async -> URL? {
         // If identifier is already a path to an .app bundle, use it directly
         if identifier.hasSuffix(".app") {
             var isDir: ObjCBool = false
@@ -124,93 +123,157 @@ actor SDEFExtractor {
             }
         }
         
-        if let url = workspace.urlForApplication(withBundleIdentifier: identifier) {
-            return url
-        }
-        
-        let paths = [
+        // Try common paths first (fast, no NSWorkspace dependency)
+        let commonPaths = [
             "/Applications/\(identifier).app",
             "/System/Applications/\(identifier).app",
             "/System/Library/CoreServices/\(identifier).app",
             "/Applications/Utilities/\(identifier).app",
         ]
-        
-        for path in paths {
+        for path in commonPaths {
             var isDir: ObjCBool = false
             if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
                 return URL(fileURLWithPath: path)
             }
         }
         
-        return nil
+        // Fallback: use `mdfind` Spotlight search for non-standard paths
+        let spotlightPath = await findAppViaSpotlight(identifier)
+        return spotlightPath
+    }
+    
+    /// Uses Spotlight to find an app path, avoiding NSWorkspace thread-safety issues.
+    private func findAppViaSpotlight(_ identifier: String) async -> URL? {
+        // Try as bundle ID first
+        let bundleQuery = "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '\(identifier)'c"
+        if let url = await runSpotlight(query: bundleQuery) {
+            return url
+        }
+        
+        // Try as display name
+        let nameQuery = "kMDItemContentType == 'com.apple.application-bundle' && kMDItemFSName == '\(identifier).app'"
+        return await runSpotlight(query: nameQuery)
+    }
+    
+    /// Runs mdfind to find an app bundle path.
+    private func runSpotlight(query: String) async -> URL? {
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/mdfind")
+                process.arguments = ["-onlyin", "/", query]
+                
+                let stdoutPipe = Pipe()
+                process.standardOutput = stdoutPipe
+                process.standardError = Pipe()
+                
+                do {
+                    try process.run()
+                } catch {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                process.waitUntilExit()
+                guard process.terminationStatus == 0 else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                let data = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                guard !output.isEmpty else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                let firstPath = output.components(separatedBy: "\n").first ?? ""
+                guard !firstPath.isEmpty else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                continuation.resume(returning: URL(fileURLWithPath: firstPath))
+            }
+        }
     }
     
     // MARK: - SDEF Execution
     
-    private func runSDEF(appURL: URL) throws -> String {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: sdefPath)
-        process.arguments = [appURL.path]
-        
-        let stdoutPipe = Pipe()
-        let stderrPipe = Pipe()
-        process.standardOutput = stdoutPipe
-        process.standardError = stderrPipe
-        
-        do {
-            try process.run()
-        } catch {
-            throw SDEFError.sdefToolFailed("Failed to run sdef: \(error.localizedDescription)")
+    /// Runs /usr/bin/sdef and captures its output using async subprocess management.
+    private func runSDEF(appURL: URL) async throws -> String {
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global().async {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: self.sdefPath)
+                process.arguments = [appURL.path]
+                
+                let stdoutPipe = Pipe()
+                let stderrPipe = Pipe()
+                process.standardOutput = stdoutPipe
+                process.standardError = stderrPipe
+                
+                do {
+                    try process.run()
+                } catch {
+                    continuation.resume(throwing: SDEFError.sdefToolFailed("Failed to run sdef: \(error.localizedDescription)"))
+                    return
+                }
+                
+                // Read stdout concurrently while process runs
+                let readGroup = DispatchGroup()
+                let stdoutHandle = stdoutPipe.fileHandleForReading
+                let stderrHandle = stderrPipe.fileHandleForReading
+                
+                var stdoutData = Data()
+                var stderrData = Data()
+                
+                readGroup.enter()
+                DispatchQueue.global().async {
+                    stdoutData = stdoutHandle.readDataToEndOfFile()
+                    readGroup.leave()
+                }
+                
+                readGroup.enter()
+                DispatchQueue.global().async {
+                    stderrData = stderrHandle.readDataToEndOfFile()
+                    readGroup.leave()
+                }
+                
+                // Wait for process exit (with 3s timeout)
+                let deadline = DispatchTime.now() + .seconds(3)
+                let processGroup = DispatchGroup()
+                processGroup.enter()
+                DispatchQueue.global().async {
+                    process.waitUntilExit()
+                    processGroup.leave()
+                }
+                
+                let timedOut = processGroup.wait(timeout: deadline) == .timedOut
+                
+                if timedOut {
+                    process.terminate()
+                    continuation.resume(throwing: SDEFError.sdefToolFailed("sdef timed out for \(appURL.lastPathComponent)"))
+                    return
+                }
+                
+                // Wait for pipe reads to finish
+                _ = readGroup.wait(timeout: .now() + .seconds(1))
+                
+                guard process.terminationStatus == 0 else {
+                    let errorMsg = String(data: stderrData, encoding: .utf8) ?? "unknown error"
+                    continuation.resume(throwing: SDEFError.sdefToolFailed("sdef exited with status \(process.terminationStatus): \(errorMsg)"))
+                    return
+                }
+                
+                guard let output = String(data: stdoutData, encoding: .utf8),
+                      !output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    continuation.resume(throwing: SDEFError.noScriptingDictionary)
+                    return
+                }
+                
+                continuation.resume(returning: output)
+            }
         }
-        
-        // Read stdout concurrently while process runs to avoid pipe buffer deadlocks
-        var stdoutData = Data()
-        var stderrData = Data()
-        
-        let readGroup = DispatchGroup()
-        let stdoutHandle = stdoutPipe.fileHandleForReading
-        let stderrHandle = stderrPipe.fileHandleForReading
-        
-        readGroup.enter()
-        DispatchQueue.global().async {
-            stdoutData = stdoutHandle.readDataToEndOfFile()
-            readGroup.leave()
-        }
-        
-        readGroup.enter()
-        DispatchQueue.global().async {
-            stderrData = stderrHandle.readDataToEndOfFile()
-            readGroup.leave()
-        }
-        
-        // Wait for process to exit (with timeout)
-        let deadline = DispatchTime.now() + .seconds(10)
-        let processGroup = DispatchGroup()
-        processGroup.enter()
-        DispatchQueue.global().async {
-            process.waitUntilExit()
-            processGroup.leave()
-        }
-        
-        if processGroup.wait(timeout: deadline) == .timedOut {
-            process.terminate()
-            throw SDEFError.sdefToolFailed("sdef timed out for \(appURL.lastPathComponent)")
-        }
-        
-        // Wait for all pipe reads to finish
-        _ = readGroup.wait(timeout: .now() + .seconds(1))
-        
-        guard process.terminationStatus == 0 else {
-            let errorMsg = String(data: stderrData, encoding: .utf8) ?? "unknown error"
-            throw SDEFError.sdefToolFailed("sdef exited with status \(process.terminationStatus): \(errorMsg)")
-        }
-        
-        guard let output = String(data: stdoutData, encoding: .utf8),
-              !output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw SDEFError.noScriptingDictionary
-        }
-        
-        return output
     }
     
     // MARK: - XML Parsing
@@ -220,264 +283,159 @@ actor SDEFExtractor {
             throw SDEFError.invalidXML
         }
         
-        let parser = SDEFXMLParser()
-        parser.parse(data: data)
+        // Parse XML using XMLDocument (NSXMLDocument) which is thread-safe
+        // and doesn't need MainActor for delegate callbacks
+        let doc = try XMLDocument(data: data, options: [])
+        guard let root = doc.rootElement() else {
+            throw SDEFError.invalidXML
+        }
         
-        guard !parser.suites.isEmpty || !parser.commands.isEmpty || !parser.classes.isEmpty else {
-            // Empty dictionary — app has no scripting support
-            return ScriptingDictionary(
-                appName: appName,
-                appBundleID: bundleID,
-                suites: [],
-                commands: [],
-                classes: []
-            )
+        var suites: [ScriptingSuite] = []
+        var commands: [ScriptingCommand] = []
+        var classes: [ScriptingClass] = []
+        
+        // Iterate through suite elements
+        for suiteNode in root.elements(forName: "suite") {
+            let suiteName = suiteNode.attributeString("name") ?? ""
+            let suiteDesc = suiteNode.attributeString("description")
+            let suiteCode = suiteNode.attributeString("code")
+            
+            suites.append(ScriptingSuite(
+                name: suiteName,
+                description: suiteDesc,
+                code: suiteCode
+            ))
+            
+            // Parse commands within this suite
+            for cmdNode in suiteNode.elements(forName: "command") {
+                let cmd = parseCommand(cmdNode, suite: suiteName)
+                commands.append(cmd)
+            }
+            
+            // Parse classes within this suite
+            for clsNode in suiteNode.elements(forName: "class") {
+                let cls = parseClass(clsNode, suite: suiteName)
+                classes.append(cls)
+            }
         }
         
         return ScriptingDictionary(
             appName: appName,
             appBundleID: bundleID,
-            suites: parser.suites,
-            commands: parser.commands,
-            classes: parser.classes
+            suites: suites,
+            commands: commands,
+            classes: classes
         )
     }
-}
-
-// MARK: - XML Parser (Foundation XMLParser delegate)
-
-private final class SDEFXMLParser: NSObject, XMLParserDelegate {
     
-    var suites: [ScriptingSuite] = []
-    var commands: [ScriptingCommand] = []
-    var classes: [ScriptingClass] = []
+    // MARK: - XML Element Parsing Helpers
     
-    // Parsing state
-    private var currentSuiteName = ""
-    private var currentSuiteDescription: String? = nil
-    private var currentSuiteCode: String? = nil
-    
-    private var currentCommand: MutableCommand?
-    private var currentClass: MutableClass?
-    private var currentProperty: MutableProperty?
-    private var currentParameter: MutableParameter?
-    private var isDirectParameter = false
-    
-    private var elementText = ""
-    
-    struct MutableCommand {
-        var name = ""
-        var code: String? = nil
-        var description: String? = nil
-        var suite = ""
+    private func parseCommand(_ node: XMLNode, suite: String) -> ScriptingCommand {
+        let el = node as! XMLElement
+        let name = el.attributeString("name") ?? ""
+        let code = el.attributeString("code")
+        let desc = el.attributeString("description")
+        let hidden = el.attributeString("hidden") == "yes"
+        
         var parameters: [ScriptingParameter] = []
         var hasResult = false
         var resultType: String? = nil
         var resultDescription: String? = nil
-        var isHidden = false
+        
+        for child in el.children ?? [] {
+            guard let childEl = child as? XMLElement else { continue }
+            switch childEl.name {
+            case "direct-parameter":
+                let p = ScriptingParameter(
+                    name: "direct",
+                    code: childEl.attributeString("code"),
+                    type: childEl.attributeString("type") ?? "any",
+                    description: childEl.attributeString("description"),
+                    isOptional: childEl.attributeString("optional") == "yes",
+                    isDirectParameter: true
+                )
+                parameters.append(p)
+            case "parameter":
+                let p = ScriptingParameter(
+                    name: childEl.attributeString("name") ?? "",
+                    code: childEl.attributeString("code"),
+                    type: childEl.attributeString("type") ?? "any",
+                    description: childEl.attributeString("description"),
+                    isOptional: childEl.attributeString("optional") == "yes",
+                    isDirectParameter: false
+                )
+                parameters.append(p)
+            case "result":
+                hasResult = true
+                resultType = childEl.attributeString("type")
+                resultDescription = childEl.attributeString("description")
+            default:
+                break
+            }
+        }
+        
+        return ScriptingCommand(
+            name: name,
+            code: code,
+            description: desc,
+            suite: suite,
+            parameters: parameters,
+            hasResult: hasResult,
+            resultType: resultType,
+            resultDescription: resultDescription,
+            isHidden: hidden
+        )
     }
     
-    struct MutableClass {
-        var name = ""
-        var code: String? = nil
-        var description: String? = nil
-        var inherits: String? = nil
-        var plural: String? = nil
-        var suite = ""
+    private func parseClass(_ node: XMLNode, suite: String) -> ScriptingClass {
+        let el = node as! XMLElement
+        let name = el.attributeString("name") ?? ""
+        let code = el.attributeString("code")
+        let desc = el.attributeString("description")
+        let inherits = el.attributeString("inherits")
+        let plural = el.attributeString("plural")
+        
         var properties: [ScriptingProperty] = []
         var elements: [String] = []
-    }
-    
-    struct MutableProperty {
-        var name = ""
-        var code: String? = nil
-        var type = ""
-        var description: String? = nil
-        var access: String? = nil
-    }
-    
-    struct MutableParameter {
-        var name = ""
-        var code: String? = nil
-        var type = ""
-        var description: String? = nil
-        var isOptional = false
-        var isDirectParameter = false
-    }
-    
-    func parse(data: Data) {
-        let xmlParser = XMLParser(data: data)
-        xmlParser.delegate = self
-        xmlParser.parse()
-    }
-    
-    // MARK: - Delegate Methods
-    
-    func parser(_ parser: XMLParser, didStartElement elementName: String,
-                namespaceURI: String?, qualifiedName: String?,
-                attributes: [String: String] = [:]) {
-        elementText = ""
         
-        switch elementName {
-        case "suite":
-            currentSuiteName = attributes["name"] ?? ""
-            currentSuiteDescription = attributes["description"]
-            currentSuiteCode = attributes["code"]
-            
-        case "command":
-            currentCommand = MutableCommand()
-            currentCommand?.name = attributes["name"] ?? ""
-            currentCommand?.code = attributes["code"]
-            currentCommand?.description = attributes["description"]
-            currentCommand?.suite = currentSuiteName
-            if attributes["hidden"] == "yes" {
-                currentCommand?.isHidden = true
-            }
-            
-        case "class":
-            currentClass = MutableClass()
-            currentClass?.name = attributes["name"] ?? ""
-            currentClass?.code = attributes["code"]
-            currentClass?.description = attributes["description"]
-            currentClass?.inherits = attributes["inherits"]
-            currentClass?.plural = attributes["plural"]
-            currentClass?.suite = currentSuiteName
-            
-        case "direct-parameter":
-            isDirectParameter = true
-            currentParameter = MutableParameter()
-            currentParameter?.name = "direct"
-            currentParameter?.type = attributes["type"] ?? "any"
-            currentParameter?.description = attributes["description"]
-            currentParameter?.isOptional = attributes["optional"] == "yes"
-            currentParameter?.isDirectParameter = true
-            
-        case "parameter":
-            isDirectParameter = false
-            currentParameter = MutableParameter()
-            currentParameter?.name = attributes["name"] ?? ""
-            currentParameter?.code = attributes["code"]
-            currentParameter?.type = attributes["type"] ?? "any"
-            currentParameter?.description = attributes["description"]
-            currentParameter?.isOptional = attributes["optional"] == "yes"
-            
-        case "result":
-            if var cmd = currentCommand {
-                cmd.hasResult = true
-                cmd.resultType = attributes["type"]
-                cmd.resultDescription = attributes["description"]
-                currentCommand = cmd
-            }
-            
-        case "property":
-            currentProperty = MutableProperty()
-            currentProperty?.name = attributes["name"] ?? ""
-            currentProperty?.code = attributes["code"]
-            currentProperty?.type = attributes["type"] ?? "any"
-            currentProperty?.description = attributes["description"]
-            currentProperty?.access = attributes["access"]
-            
-        case "element":
-            if let type = attributes["type"] {
-                currentClass?.elements.append(type)
-            }
-            
-        case "access-group":
-            // Ignore access control metadata
-            break
-            
-        default:
-            break
-        }
-    }
-    
-    func parser(_ parser: XMLParser, didEndElement elementName: String,
-                namespaceURI: String?, qualifiedName: String?) {
-        
-        switch elementName {
-        case "suite":
-            suites.append(ScriptingSuite(
-                name: currentSuiteName,
-                description: currentSuiteDescription,
-                code: currentSuiteCode
-            ))
-            currentSuiteName = ""
-            currentSuiteDescription = nil
-            currentSuiteCode = nil
-            
-        case "command":
-            if let cmd = currentCommand {
-                commands.append(ScriptingCommand(
-                    name: cmd.name,
-                    code: cmd.code,
-                    description: cmd.description,
-                    suite: cmd.suite,
-                    parameters: cmd.parameters,
-                    hasResult: cmd.hasResult,
-                    resultType: cmd.resultType,
-                    resultDescription: cmd.resultDescription,
-                    isHidden: cmd.isHidden
-                ))
-            }
-            currentCommand = nil
-            
-        case "class":
-            if let cls = currentClass {
-                classes.append(ScriptingClass(
-                    name: cls.name,
-                    code: cls.code,
-                    description: cls.description,
-                    inherits: cls.inherits,
-                    plural: cls.plural,
-                    suite: cls.suite,
-                    properties: cls.properties,
-                    elements: cls.elements
-                ))
-            }
-            currentClass = nil
-            
-        case "direct-parameter", "parameter":
-            if let param = currentParameter {
-                let scriptingParam = ScriptingParameter(
-                    name: param.name,
-                    code: param.code,
-                    type: param.type,
-                    description: param.description,
-                    isOptional: param.isOptional,
-                    isDirectParameter: param.isDirectParameter
+        for child in el.children ?? [] {
+            guard let childEl = child as? XMLElement else { continue }
+            switch childEl.name {
+            case "property":
+                let p = ScriptingProperty(
+                    name: childEl.attributeString("name") ?? "",
+                    code: childEl.attributeString("code"),
+                    type: childEl.attributeString("type") ?? "any",
+                    description: childEl.attributeString("description"),
+                    access: childEl.attributeString("access")
                 )
-                
-                if var cmd = currentCommand {
-                    cmd.parameters.append(scriptingParam)
-                    currentCommand = cmd
+                properties.append(p)
+            case "element":
+                if let type = childEl.attributeString("type") {
+                    elements.append(type)
                 }
+            default:
+                break
             }
-            currentParameter = nil
-            isDirectParameter = false
-            
-        case "result":
-            // Handled in didStartElement
-            break
-            
-        case "property":
-            if let prop = currentProperty {
-                let scriptingProp = ScriptingProperty(
-                    name: prop.name,
-                    code: prop.code,
-                    type: prop.type,
-                    description: prop.description,
-                    access: prop.access
-                )
-                currentClass?.properties.append(scriptingProp)
-            }
-            currentProperty = nil
-            
-        default:
-            break
         }
+        
+        return ScriptingClass(
+            name: name,
+            code: code,
+            description: desc,
+            inherits: inherits,
+            plural: plural,
+            suite: suite,
+            properties: properties,
+            elements: elements
+        )
     }
-    
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        elementText += string
+}
+
+// MARK: - XMLElement Helpers
+
+private extension XMLElement {
+    func attributeString(_ name: String) -> String? {
+        return attribute(forName: name)?.stringValue
     }
 }

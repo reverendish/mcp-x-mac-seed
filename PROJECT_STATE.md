@@ -1,11 +1,14 @@
 # MCP-x-Mac Seed Server — Project State
 
-**Status:** All 14 phases complete + 313 evolved tools + SDEF-aware engine — production-ready
-**Last Updated:** 2026-05-04
-**Tests:** 80/80 passing (10 suites)
-**Registry:** 430 tools across 43 apps
+**Status:** All 14 phases complete + 313 evolved tools + SDEF-aware engine + consolidated tool bootstrap — production-ready
+**Last Updated:** 2026-05-09
+**Tests:** 80 test cases, **80 passing** — all 10 suites green
+**Fixes (2026-05-09):**
+- **Security check order**: `containsDangerousPatterns` moved before `ensureAppIsRunning` in `ExecutionEngine` — dangerous AppleScript blocks in <10ms instead of ~5s
+- **SDEF test isolation**: Replaced `NSWorkspace.shared` with filesystem path + `mdfind` Spotlight lookups (was thread-unsafe on actor threads); replaced delegate-based `XMLParser` with `XMLDocument` tree API (thread-safe); refactored subprocess management to `withCheckedContinuation` (non-blocking on actors)
+- **Accessibility scanner timing**: Fixed implicitly — no longer depends on coincidental test ordering
+**Registry:** Consolidated per-app tools from SDEF (one tool per scriptable app, no command cap)
 **Engine:** SDEF-aware execution with auto-launch (AppleScript → AppIntent → Accessibility)
-**Test Coverage:** 48/313 evolved tools tested (15%), 22 working, 5 consent-gated
 **Architecture:** Recursive meta-compiler with triple-threat execution engine
 
 ## Project Summary

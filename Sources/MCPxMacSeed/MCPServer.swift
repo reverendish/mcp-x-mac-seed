@@ -23,15 +23,15 @@ func bootstrapServer() async throws {
     let screenContext = ScreenContext()
     let approvalGate = ApprovalGate(registry: db)
     
-    // ─── Run system bootstrap in background (doesn't block server start) ───
+    // ─── Run system bootstrap before starting server ───
     
     let bootstrap = SystemBootstrap(
         registry: db,
         sdefExtractor: sdefExtractor,
         intentExplorer: intentExplorer
     )
-    Task {
-        let count = await bootstrap.bootstrapIfNeeded()
+    let count = await bootstrap.bootstrapIfNeeded()
+    if count > 0 {
         fputs("[MCPxMacSeed] Bootstrap complete: \(count) tools auto-discovered.\n", stderr)
     }
     

@@ -320,6 +320,31 @@ func registerAllTools(
             }
         }
         
+        // Resolve the actual command name for consolidated tools
+        // A consolidated tool's schema has a "commands" array — when the intentName
+        // matches a consolidated tool, extract the command from parameters.
+        var resolvedIntentName = intentName
+        var resolvedParameters = parameters
+        if let tool = matchingTool,
+           let schemaData = tool.schemaJSON.data(using: .utf8),
+           let schemaDict = try? JSONSerialization.jsonObject(with: schemaData) as? [String: Any],
+           schemaDict["commands"] != nil,
+           let cmdFromParams = parameters["command"] {
+            // Consolidated tool: use the command value as intent name
+            resolvedIntentName = cmdFromParams
+            // Strip the "command" key from parameters (it's not an AppleScript arg)
+            resolvedParameters = parameters.filter { $0.key != "command" }
+            // If parameters were passed as a JSON string in "parameters", parse them too
+            if let paramsStr = resolvedParameters["parameters"],
+               let paramsData = paramsStr.data(using: .utf8),
+               let paramsDict = try? JSONSerialization.jsonObject(with: paramsData) as? [String: Any] {
+                for (k, v) in paramsDict {
+                    resolvedParameters[k] = "\(v)"
+                }
+                resolvedParameters.removeValue(forKey: "parameters")
+            }
+        }
+        
         // Execute via triple-threat engine
         // Check if the tool has a stored AppleScript from Repairman correction
         var prebuiltScript: String? = nil
@@ -330,7 +355,7 @@ func registerAllTools(
             prebuiltScript = storedScript
         }
         
-        let result = await engine.execute(app: app, intentName: intentName, parameters: parameters, mode: mode, prebuiltScript: prebuiltScript)
+        let result = await engine.execute(app: app, intentName: resolvedIntentName, parameters: resolvedParameters, mode: mode, prebuiltScript: prebuiltScript)
         
         let encoder = JSONEncoder()
         let resultJSON = (try? encoder.encode(result)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"

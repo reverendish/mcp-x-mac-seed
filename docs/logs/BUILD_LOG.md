@@ -343,3 +343,35 @@
 - `docs/evolutions/TEST_MATRIX.md`: Updated (48/313 tested)
 - `docs/evolutions/APPLESCRIPT_KB.md`: Test history + engine improvements
 - `docs/logs/BUILD_LOG.md`: This entry
+
+## 2026-05-09 — Test Isolation & Security Fixes
+
+### Bugs Fixed
+
+**1. Security timing (ExecutionEngine.swift):**
+- Moved `containsDangerousPatterns` check *before* `ensureIsRunning(app:)` in `tryAppleScript`
+- Previously: launch app (~2s) → build script → check security → block
+- Now: build script → check security (<10ms) → return immediately if dangerous
+- Test "Dangerous AppleScript patterns are blocked" now expects blocking in <50ms (was ~5.6s)
+
+**2. SDEF test isolation (SDEFExtractor.swift + ExecutionEngine.swift):**
+Root cause: three concurrent-access bugs when tests run in parallel:
+- **NSWorkspace.shared** was called from background threads (actor executor). Replaced with filesystem path lookups + `mdfind` Spotlight subprocess (no NSWorkspace needed).
+- **Delegate-based XMLParser** callbacks don't work reliably outside the main thread. Replaced with `XMLDocument` tree API (thread-safe, no delegates).
+- **Synchronous `process.waitUntilExit()`** blocked the actor's executor. Refactored to `withCheckedThrowingContinuation` / `withCheckedContinuation` on background queues.
+- The `ExecutionEngine.extractSdefCommands()` also removed its `NSWorkspace.shared` call — uses filesystem path lookup only.
+
+**3. Redundant `warmSdefCache` removed:**
+- Removed the async SDEF pre-warm from `tryAppleScript` — caused regression in the AppIntent fallback test
+- Reverted to the original synchronous `extractSdefCommands` with path-only resolution
+
+### Test Results
+**All 80 tests passing** — 10/10 suites green. Previously 6 failures under parallel load:
+- `SDEFExtractorTests`: 5 failures → 0 (test isolation fixed)
+- `ExecutionEngineTests`: 1 failure (timing) + 1 failure (regression from warmSdefCache) → 0
+- `AccessibilityScannerTests`: 2 failures (timing-dependent, environmental) → 0
+
+### Files Modified
+- `Sources/MCPxMacSeed/AppIntents/ExecutionEngine.swift`: Security check ordering; reverted to sync `extractSdefCommands` with path-only resolution; removed `warmSdefCache`
+- `Sources/MCPxMacSeed/AppIntents/SDEFExtractor.swift`: Replaced NSWorkspace with `mdfind` + path lookup; replaced delegate XMLParser with XMLDocument; refactored to `withCheckedContinuation` for subprocess; refactored `runSpotlight` to continuation-based
+- `PROJECT_STATE.md`: Updated test count to 80/80

@@ -41,8 +41,11 @@ actor SystemBootstrap {
             "/System/Applications",
             "/System/Applications/Utilities",
             "/System/Library/CoreServices",
+            "/System/Library/CoreServices/Applications",
             "/Applications",
             "/Applications/Utilities",
+            "/System/iOSSupport/Applications",
+            "/Library/Application Support/Apple",
         ]
         
         for dir in dirs {
@@ -60,19 +63,23 @@ actor SystemBootstrap {
                 let skipApps = ["automator application stub", "automator runner"]
                 if skipApps.contains(lower) { continue }
                 
+                // Skip known apps that cause `sdef` to hang
+                // Some CoreServices system daemon agents trigger an infinite loop in sdef.
+                let knownHangers = ["keyboardaccessagent", "accessibility reader"]
+                if knownHangers.contains(lower) { continue }
+                
                 // Strategy 1: SDEF (AppleScript — most reliable)
                 let dict = try? await sdefExtractor.fetchScriptingDictionary(appName: path)
                 if let sdef = dict, !sdef.commands.isEmpty {
-                    let limit = min(sdef.commands.count, 25)
-                    for cmd in sdef.commands.prefix(limit) where !cmd.isHidden {
-                        let toolName = sanitize("\(name)_\(cmd.name)")
-                        let schema = buildSDEFSchema(command: cmd, app: name)
-                        let id = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
-                        if let toolID = id, TrustClassifier.classify(toolName: toolName) == .sensitive {
-                            try? await registry.setApprovalGate(id: toolID, requiresApproval: true)
-                        }
-                        count += 1
+                    // Consolidate all commands into ONE tool per app
+                    let visibleCommands = sdef.commands.filter { !$0.isHidden }
+                    let toolName = sanitize(name)
+                    let schema = buildConsolidatedSDEFSchema(app: name, commands: visibleCommands)
+                    let id = try? await registry.registerTool(name: toolName, app: name, schemaJSON: schema, embedding: nil)
+                    if let toolID = id, TrustClassifier.classify(toolName: toolName) == .sensitive {
+                        try? await registry.setApprovalGate(id: toolID, requiresApproval: true)
                     }
+                    count += 1
                     continue
                 }
                 
@@ -119,17 +126,50 @@ actor SystemBootstrap {
     
     // MARK: - Schema Builders
     
-    private func buildSDEFSchema(command: ScriptingCommand, app: String) -> String {
-        var props: [[String: Any]] = []
-        var reqs: [String] = []
-        for p in command.parameters {
-            props.append([p.name: ["type": mapType(p.type), "description": p.description ?? p.name]])
-            if !p.isOptional { reqs.append(p.name) }
+    private func buildConsolidatedSDEFSchema(app: String, commands: [ScriptingCommand]) -> String {
+        let commandNames = commands.map { cmd in
+            var entry = cmd.name
+            if let desc = cmd.description, !desc.isEmpty {
+                entry += " — \(desc)"
+            }
+            return entry
         }
+        
         let schema: [String: Any] = [
-            "name": command.name, "description": command.description ?? "\(command.name) via AppleScript",
-            "app": app, "strategy": "applescript",
-            "inputSchema": ["type": "object", "properties": props, "required": reqs]
+            "name": sanitize(app),
+            "description": "AppleScript automation for \(app) — \(commands.count) commands available",
+            "app": app,
+            "strategy": "applescript",
+            "inputSchema": [
+                "type": "object",
+                "properties": [
+                    "command": [
+                        "type": "string",
+                        "enum": commands.map { $0.name },
+                        "description": "The AppleScript command to execute. Available commands: \n- " + commandNames.joined(separator: "\n- ")
+                    ],
+                    "parameters": [
+                        "type": "object",
+                        "description": "Command-specific parameters as key-value pairs. For the 'direct' parameter, use key 'direct'."
+                    ]
+                ] as [String: Any],
+                "required": ["command"]
+            ] as [String: Any],
+            "commands": commands.map { cmd in
+                [
+                    "name": cmd.name,
+                    "description": cmd.description ?? cmd.name,
+                    "parameters": cmd.parameters.map { p in
+                        [
+                            "name": p.name,
+                            "type": p.type,
+                            "required": !p.isOptional,
+                            "description": p.description ?? ""
+                        ] as [String: Any]
+                    },
+                    "hasResult": cmd.hasResult
+                ] as [String: Any]
+            }
         ]
         guard let d = try? JSONSerialization.data(withJSONObject: schema, options: .sortedKeys),
               let s = String(data: d, encoding: .utf8) else { return "{}" }

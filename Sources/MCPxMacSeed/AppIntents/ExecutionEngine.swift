@@ -230,9 +230,6 @@ actor ExecutionEngine {
     /// If prebuiltScript is provided (from a repaired tool schema), it's used directly
     /// with parameter substitution.
     private func tryAppleScript(app: String, intentName: String, parameters: [String: String], prebuiltScript: String? = nil) async -> String? {
-        // Auto-launch the app if it's not running (fixes "Application isn't running. (-600)" errors)
-        await ensureAppIsRunning(app: app)
-        
         // Use the stored prebuilt script if available (from Repairman-corrected tool schema)
         let script: String
         let positionalArgs: [String]
@@ -243,11 +240,14 @@ actor ExecutionEngine {
             positionalArgs = []
         }
         
-        // Sanitization check: flag dangerous patterns
+        // Sanitization check: flag dangerous patterns BEFORE app launch and subprocess
         if containsDangerousPatterns(script) {
             fputs("[Security] AppleScript blocked — contains dangerous patterns (do shell script, sudo, rm -rf, etc.): \(script.prefix(200))\n", stderr)
             return nil
         }
+        
+        // Auto-launch the app if it's not running (fixes "Application isn't running. (-600)" errors)
+        await ensureAppIsRunning(app: app)
         
         // Build osascript args: -e script -- arg1 arg2 ...
         var osascriptArgs = ["-e", script]
@@ -435,6 +435,7 @@ actor ExecutionEngine {
     }
     
     /// Loads SDEF commands for an app, with caching.
+    /// Uses a synchronous subprocess to avoid async/Sendable issues in the buildAppleScript chain.
     private func loadSdefCommands(for app: String) -> [SdefCommandInfo]? {
         // Check cache first
         if let cached = sdefCache[app] {
@@ -442,7 +443,7 @@ actor ExecutionEngine {
             return cached.isEmpty ? nil : cached
         }
         
-        // Run SDEF extraction on a detached task and await it
+        // Cache miss — extract synchronously
         fputs("[SDEF-Cache] Miss for '\(app)' — extracting...\n", stderr)
         let extracted = extractSdefCommands(app: app)
         fputs("[SDEF-Cache] Extracted \(extracted.count) commands for '\(app)'\n", stderr)
@@ -451,26 +452,10 @@ actor ExecutionEngine {
     }
     
     /// Extracts SDEF commands for a given app by calling `/usr/bin/sdef` directly.
-    /// This avoids async/Sendable issues by using a synchronous subprocess.
+    /// Runs NSWorkspace lookup on MainActor to avoid thread-safety issues.
     private nonisolated func extractSdefCommands(app: String) -> [SdefCommandInfo] {
-        // Resolve app path first
-        let workspace = NSWorkspace.shared
-        var appPath: String?
-        
-        // Try bundle ID first, then display name
-        if let bundleURL = workspace.urlForApplication(withBundleIdentifier: app) {
-            appPath = bundleURL.path
-        }
-        if appPath == nil {
-            if let url = workspace.urlForApplication(withBundleIdentifier: "com.apple.\(app)") {
-                appPath = url.path
-            }
-        }
-        if appPath == nil, let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: app) {
-            appPath = url.path
-        }
-        
-        guard let resolvedPath = appPath else { return [] }
+        // Resolve app path — use MainActor for NSWorkspace
+        guard let resolvedPath = findAppPathSync(app) else { return [] }
         
         // Run /usr/bin/sdef synchronously
         let process = Process()
@@ -494,15 +479,33 @@ actor ExecutionEngine {
         let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
         guard let xmlString = String(data: stdoutData, encoding: .utf8) else { return [] }
         
-        // Parse command names from SDEF XML using regex (same as evolve_mac_apps.py)
         return parseSdefCommands(from: xmlString)
+    }
+    
+    /// Resolves an app to its path on the filesystem, blocking the current thread.
+    /// Used by extractSdefCommands which is nonisolated and synchronous.
+    private nonisolated func findAppPathSync(_ identifier: String) -> String? {
+        // First try common paths (no NSWorkspace needed)
+        let commonPaths = [
+            "/Applications/\(identifier).app",
+            "/System/Applications/\(identifier).app",
+            "/System/Library/CoreServices/\(identifier).app",
+            "/Applications/Utilities/\(identifier).app",
+        ]
+        for path in commonPaths {
+            var isDir: ObjCBool = false
+            if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
+                return path
+            }
+        }
+        return nil
     }
     
     /// Parses command names from raw SDEF XML using regex.
     private nonisolated func parseSdefCommands(from xml: String) -> [SdefCommandInfo] {
         var commands: [SdefCommandInfo] = []
         
-        // Pattern: <command name="NAME" ... description="DESC" ...
+        // Pattern: <command name="NAME" ...>
         guard let regex = try? NSRegularExpression(
             pattern: #"<command\s+name="([^"]*)"(?:\s+hidden="(yes)")?(?:[^>]*)\s*(?:description="([^"]*)")?"#,
             options: []
@@ -514,19 +517,14 @@ actor ExecutionEngine {
         for match in matches {
             guard let nameRange = Range(match.range(at: 1), in: xml) else { continue }
             let rawName = String(xml[nameRange])
-            
-            // Check hidden flag
             if let hiddenRange = Range(match.range(at: 2), in: xml) {
                 if xml[hiddenRange] == "yes" { continue }
             }
-            
             var desc = ""
             if let descRange = Range(match.range(at: 3), in: xml) {
                 desc = String(xml[descRange])
             }
-            
             if rawName.isEmpty { continue }
-            
             commands.append(SdefCommandInfo(
                 commandName: rawName,
                 parameters: [],
