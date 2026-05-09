@@ -722,6 +722,71 @@ actor ExecutionEngine {
             }
         }
         
+        // Messages
+        if app == "Messages" {
+            switch lowered {
+            case "send", "send_message", "compose":
+                let recipient = params["to"] ?? params["recipient"] ?? ""
+                let body = params["body"] ?? params["message"] ?? params["text"] ?? ""
+                let service = params["service"] ?? "E:\(recipient)"
+                if recipient.isEmpty { return nil }
+                return "tell application \"Messages\" to send \"\(body)\" to buddy \"\(recipient)\" of service \"\(service)\""
+            case "show", "activate":
+                return "tell application \"Messages\" to activate"
+            default:
+                break
+            }
+        }
+        
+        // Pages
+        if app == "Pages" {
+            switch lowered {
+            case "create_document", "new_document", "create", "make":
+                let content = params["content"] ?? params["body"] ?? params["direct"] ?? ""
+                return "tell application \"Pages\" to make new document with properties {body text:\"\(content)\"}"
+            case "show", "activate":
+                return "tell application \"Pages\" to activate"
+            default:
+                break
+            }
+        }
+        
+        // iTerm
+        if app == "iTerm" || app == "iTerm2" {
+            switch lowered {
+            case "run", "execute", "write text":
+                let command = params["command"] ?? params["direct"] ?? ""
+                if command.isEmpty { return nil }
+                return "tell application \"iTerm\"\ntell current session of current window\nwrite text \"\(command)\"\nend tell\nend tell"
+            case "paste":
+                return "tell application \"iTerm\" to tell current session of current window to paste"
+            case "show", "activate":
+                return "tell application \"iTerm\" to activate"
+            default:
+                break
+            }
+        }
+        
+        // System-level / NotificationCenter
+        if app == "NotificationCenter" || app == "System" {
+            switch lowered {
+            case "display_notification", "send_notification", "notify":
+                let title = params["title"] ?? "MCP Notification"
+                let message = params["message"] ?? params["body"] ?? params["direct"] ?? ""
+                let sound = params["sound"]?.lowercased() == "true" ? " sound name \"default\"" : ""
+                return "display notification \"\(message)\" with title \"\(title)\"\(sound)"
+            case "get_clipboard":
+                return "get the clipboard"
+            case "set_clipboard":
+                let content = params["content"] ?? params["direct"] ?? ""
+                return "set the clipboard to \"\(content)\""
+            case "clear_clipboard":
+                return "set the clipboard to \"\""
+            default:
+                break
+            }
+        }
+        
         return nil
     }
     
