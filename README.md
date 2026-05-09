@@ -5,7 +5,7 @@
 No hardcoded integrations. No per-app plugins. The agent discovers capabilities itself, writes its own tools, and repairs them when apps update.
 
 ```
-388 tools auto-discovered across ~50 apps in 2 seconds on first run.
+71 consolidated per-app tools across 50+ macOS apps. Self-healing. Production-ready.
 ```
 
 [![Swift 6.3](https://img.shields.io/badge/Swift-6.3-orange)](https://swift.org)
